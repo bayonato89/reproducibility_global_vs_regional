@@ -1006,8 +1006,6 @@ def tight_bbox(self):
 
     return bounds
 
-#ptsNZ = np.loadtxt(test_region_NZ, skiprows=0, delimiter='\t', dtype='str')
-#ptsNZ = GEAR1NZ_f.region.tight_bbox()
 ptsNZ = tight_bbox(GEAR1NZ_f)
 ax_GEAR1NZ.plot(ptsNZ[:,0], ptsNZ[:,1], lw=1, color='black', transform=ccrs.PlateCarree(), zorder=2)
 
