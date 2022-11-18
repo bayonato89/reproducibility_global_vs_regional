@@ -1003,8 +1003,8 @@ ax_GEAR1NZ.plot(ptsNZ[:,0], ptsNZ[:,1], lw=1, color='black', transform=ccrs.Plat
 
 
 ax_GEAR1I = fig.add_subplot(233, projection=ccrs.PlateCarree(), adjustable='datalim')
-ax_GEAR1I.add_feature(cartopy.feature.BORDERS, color='lightgrey', linewidth=1.5, zorder=1)
-ax_GEAR1I.add_feature(cartopy.feature.COASTLINE, edgecolor='lightgrey', linewidth=1.5, zorder=1)
+ax_GEAR1I.add_feature(cartopy.feature.BORDERS, color='lightgrey', linewidth=1.5, zorder=2)
+ax_GEAR1I.add_feature(cartopy.feature.COASTLINE, edgecolor='lightgrey', linewidth=1.5, zorder=2)
 ax_GEAR1I.add_image(_get_basemap('google-satellite'), 5)
 gl = ax_GEAR1I.gridlines()
 gl.xlines = False
@@ -1103,8 +1103,8 @@ ax_PPE.plot(ptsNZ[:,0], ptsNZ[:,1], lw=1, color='black', transform=ccrs.PlateCar
 
 
 ax_HRSS_CSI = fig.add_subplot(236, projection=ccrs.PlateCarree(), adjustable='datalim')
-ax_HRSS_CSI.add_feature(cartopy.feature.BORDERS, color='lightgrey', linewidth=1.5, zorder=1)
-ax_HRSS_CSI.add_feature(cartopy.feature.COASTLINE, edgecolor='lightgrey', linewidth=1.5, zorder=1)
+ax_HRSS_CSI.add_feature(cartopy.feature.BORDERS, color='lightgrey', linewidth=1.5, zorder=2)
+ax_HRSS_CSI.add_feature(cartopy.feature.COASTLINE, edgecolor='lightgrey', linewidth=1.5, zorder=2)
 ax_HRSS_CSI.add_image(_get_basemap('google-satellite'), 5)
 gl = ax_HRSS_CSI.gridlines()
 gl.xlines = False
@@ -1203,8 +1203,8 @@ ax_NZHM.plot(ptsNZ[:,0], ptsNZ[:,1], lw=1, color='black', transform=ccrs.PlateCa
 
 
 ax_ALM_IT = fig.add_subplot(233, projection=ccrs.PlateCarree(), adjustable='datalim')
-ax_ALM_IT.add_feature(cartopy.feature.BORDERS, color='lightgrey', linewidth=1.5, zorder=1)
-ax_ALM_IT.add_feature(cartopy.feature.COASTLINE, edgecolor='lightgrey', linewidth=1.5, zorder=1)
+ax_ALM_IT.add_feature(cartopy.feature.BORDERS, color='lightgrey', linewidth=1.5, zorder=2)
+ax_ALM_IT.add_feature(cartopy.feature.COASTLINE, edgecolor='lightgrey', linewidth=1.5, zorder=2)
 ax_ALM_IT.add_image(_get_basemap('google-satellite'), 5)
 gl = ax_ALM_IT.gridlines()
 gl.xlines = False
@@ -1304,8 +1304,8 @@ ax_SUP.plot(ptsNZ[:,0], ptsNZ[:,1], lw=1, color='black', transform=ccrs.PlateCar
 
 
 ax_TRIPLES_CPTI = fig.add_subplot(236, projection=ccrs.PlateCarree(), adjustable='datalim')
-ax_TRIPLES_CPTI.add_feature(cartopy.feature.BORDERS, color='lightgrey', linewidth=1.5, zorder=1)
-ax_TRIPLES_CPTI.add_feature(cartopy.feature.COASTLINE, edgecolor='lightgrey', linewidth=1.5, zorder=1)
+ax_TRIPLES_CPTI.add_feature(cartopy.feature.BORDERS, color='lightgrey', linewidth=1.5, zorder=2)
+ax_TRIPLES_CPTI.add_feature(cartopy.feature.COASTLINE, edgecolor='lightgrey', linewidth=1.5, zorder=2)
 ax_TRIPLES_CPTI.add_image(_get_basemap('google-satellite'), 5)
 gl = ax_TRIPLES_CPTI.gridlines()
 gl.xlines = False
