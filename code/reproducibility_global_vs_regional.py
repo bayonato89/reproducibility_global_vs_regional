@@ -997,8 +997,9 @@ scatter = ax_GEAR1NZ.scatter(GEAR1NZ_f.get_longitudes()+dh/2, GEAR1NZ_f.get_lati
                          c = np.log10(GEAR1NZ_f.spatial_counts()), cmap='inferno', vmin=-4.5, vmax=-0.5,
                          s=5, marker='s', alpha =1, edgecolor="None", zorder=1)
 
-
-ptsNZ = GEAR1NZ_f.region.tight_bbox()
+test_region_NZ = './data/nz.testing.nodes.dat'
+ptsNZ = np.loadtxt(test_region_NZ, skiprows=0, delimiter='\t', dtype='str')
+#ptsNZ = GEAR1NZ_f.region.tight_bbox()
 ax_GEAR1NZ.plot(ptsNZ[:,0], ptsNZ[:,1], lw=1, color='black', transform=ccrs.PlateCarree(), zorder=2)
 
 
@@ -2463,7 +2464,7 @@ def _plot_diff_spatial_likelihood(forecast1, forecast2, catalog, diff_LL, marker
     
     
     # We highlight the testing area for visualization purposes:
-    ptsNZ = GEAR1NZ_f.region.tight_bbox()
+    #ptsNZ = GEAR1NZ_f.region.tight_bbox()
     ax_dLL.plot(ptsNZ[:,0], ptsNZ[:,1], lw=1, color='black', transform=ccrs.PlateCarree(), zorder=2)
     
     
