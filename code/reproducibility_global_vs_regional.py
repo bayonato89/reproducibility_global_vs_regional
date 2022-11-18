@@ -5,7 +5,7 @@
 
 # ### Authors: Toño Bayona, Bill Savran, Pablo Iturrieta, and Asim Khawaja.
 
-# #### Last Update: November 14, 2022.
+# #### Last Update: November 18, 2022.
 
 # In[1]:
 
@@ -999,7 +999,7 @@ scatter = ax_GEAR1NZ.scatter(GEAR1NZ_f.get_longitudes()+dh/2, GEAR1NZ_f.get_lati
                          c = np.log10(GEAR1NZ_f.spatial_counts()), cmap='inferno', vmin=-4.5, vmax=-0.5,
                          s=5, marker='s', alpha =1, edgecolor="None", zorder=1)
 
-def tight_bbox(GEAR1NZ_f):
+def tight_bbox(self):
     polys = [geometry.Polygon([(np.round(j[0], 2), np.round(j[1], 2)) for j in i.points]) for i in self.polygons]
     joined_poly = unary_union(polys)
     bounds = np.array([i for i in joined_poly.boundary.xy]).T
