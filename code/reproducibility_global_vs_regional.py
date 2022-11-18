@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# ## This Jupyter notebook reproduces the results reported by Bayona et al. (in review) on the porspective comparison between global and regional time-independent seismicity models for California, New Zealand, and Italy. 
+# ## This Jupyter notebook reproduces the results reported by Bayona et al. (in review) on the prospective comparison between global and regional time-independent seismicity models for California, New Zealand, and Italy. 
 
 # ### Authors: Toño Bayona, Bill Savran, Pablo Iturrieta, and Asim Khawaja.
 
