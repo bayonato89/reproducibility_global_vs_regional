@@ -36,6 +36,8 @@ import matplotlib.ticker as mticker
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 import matplotlib.pyplot as pyplot
 import pickle
+from shapely import geometry
+from shapely.ops import unary_union
 
 
 # In[2]:
@@ -997,9 +999,16 @@ scatter = ax_GEAR1NZ.scatter(GEAR1NZ_f.get_longitudes()+dh/2, GEAR1NZ_f.get_lati
                          c = np.log10(GEAR1NZ_f.spatial_counts()), cmap='inferno', vmin=-4.5, vmax=-0.5,
                          s=5, marker='s', alpha =1, edgecolor="None", zorder=1)
 
-test_region_NZ = './data/nz.testing.nodes.dat'
-ptsNZ = np.loadtxt(test_region_NZ, skiprows=0, delimiter='\t', dtype='str')
+def tight_bbox(GEAR1NZ_f):
+    polys = [geometry.Polygon([(np.round(j[0], 2), np.round(j[1], 2)) for j in i.points]) for i in self.polygons]
+    joined_poly = unary_union(polys)
+    bounds = np.array([i for i in joined_poly.boundary.xy]).T
+
+    return bounds
+
+#ptsNZ = np.loadtxt(test_region_NZ, skiprows=0, delimiter='\t', dtype='str')
 #ptsNZ = GEAR1NZ_f.region.tight_bbox()
+ptsNZ = tight_bbox(GEAR1NZ_f)
 ax_GEAR1NZ.plot(ptsNZ[:,0], ptsNZ[:,1], lw=1, color='black', transform=ccrs.PlateCarree(), zorder=2)
 
 
