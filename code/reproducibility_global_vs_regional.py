@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# ## This Jupyter notebook reproduces the results reported by Bayona et al. (2022b) on the porspective comparison between global and regional time-independent seismicity models for California, New Zealand, and Italy. 
+# ## This Jupyter notebook reproduces the results reported by Bayona et al. (in review) on the porspective comparison between global and regional time-independent seismicity models for California, New Zealand, and Italy. 
 
 # ### Authors: Toño Bayona, Bill Savran, Pablo Iturrieta, and Asim Khawaja.
 
-# #### Last Update: September 28, 2022.
+# #### Last Update: November 14, 2022.
 
 # In[1]:
 
@@ -44,7 +44,7 @@ import pickle
 warnings.filterwarnings('ignore')
 
 
-# In[ ]:
+# In[3]:
 
 
 t0 = time.time()
@@ -60,21 +60,21 @@ print ('Importing earthquake forecasts for prospective evaluation...')
 
 # #### Global
 
-# In[3]:
+# In[5]:
 
 
 area_fnameW = './forecasts/area.dat'
 GEAR1_fnameW = './forecasts/GEAR1.dat'
 
 
-# In[4]:
+# In[6]:
 
 
 bulk_dataW = np.loadtxt(GEAR1_fnameW, skiprows=1, delimiter=',')
 bulk_areaW = np.loadtxt(area_fnameW, skiprows=1, delimiter=',')
 
 
-# In[16]:
+# In[7]:
 
 
 lonsW = bulk_dataW[:,0] 
@@ -112,7 +112,7 @@ m885 = bulk_dataW[:,31]
 m895 = bulk_dataW[:,32]
 
 
-# In[17]:
+# In[8]:
 
 
 GEAR1 = pd.DataFrame()
@@ -153,26 +153,26 @@ GEAR1['m895'] = m895
 
 # #### California
 
-# In[18]:
+# In[9]:
 
 
 GEAR1_Clon = GEAR1[(GEAR1['longitude'] > -128.0) & (GEAR1['longitude'] < -110.0)]
 GEAR1_Clat = GEAR1_Clon[(GEAR1_Clon['latitude'] > 31.0) & (GEAR1_Clon['latitude'] < 45.0)]
 
 
-# In[19]:
+# In[10]:
 
 
 GEAR1_Clat.to_csv('./forecasts/GEAR1_around_California.dat')
 
 
-# In[20]:
+# In[11]:
 
 
 cell_areaW = bulk_areaW[:,2]
 
 
-# In[21]:
+# In[12]:
 
 
 area = pd.DataFrame()
@@ -181,34 +181,34 @@ area['latitude'] = latsW
 area['area'] = cell_areaW
 
 
-# In[22]:
+# In[13]:
 
 
 area_Clon = area[(area['longitude'] > -128.0) & (area['longitude'] < -110.0)]
 area_Clat = area_Clon[(area_Clon['latitude'] > 31.0) & (area_Clon['latitude'] < 45.0)]
 
 
-# In[23]:
+# In[14]:
 
 
 area_Clat.to_csv('./data/areas_around_California.dat')
 
 
-# In[24]:
+# In[15]:
 
 
 area_fnameC = './data/areas_around_California.dat'
 fore_fnameC = './forecasts/GEAR1_around_California.dat'
 
 
-# In[25]:
+# In[16]:
 
 
 bulk_dataC = np.loadtxt(fore_fnameC, skiprows=1, delimiter=',')
 bulk_areaC = np.loadtxt(area_fnameC, skiprows=1, delimiter=',')
 
 
-# In[26]:
+# In[17]:
 
 
 cell_areaC = bulk_areaC[:,3]
@@ -219,7 +219,7 @@ lonsC = bulk_dataC[:,1] - offset
 latsC = bulk_dataC[:,2] - offset 
 
 
-# In[27]:
+# In[18]:
 
 
 m595C = bulk_dataC[:,3] 
@@ -255,13 +255,13 @@ m885C = bulk_dataC[:,32]
 m895C = bulk_dataC[:,33] 
 
 
-# In[28]:
+# In[19]:
 
 
 b_California = 1.0
 
 
-# In[29]:
+# In[20]:
 
 
 GEAR1_C = pd.DataFrame() 
@@ -310,7 +310,7 @@ GEAR1_C['m885'] = m885C * 5.0
 GEAR1_C['m895'] = m895C * 5.0 
 
 
-# In[30]:
+# In[21]:
 
 
 mw_min = 4.95
@@ -319,11 +319,11 @@ dmw = 0.1
 mws = np.arange(mw_min, mw_max+dmw/2, dmw)
 
 
-# In[31]:
+# In[22]:
 
 
 start_date = time_utils.strptime_to_utc_datetime('2014-01-01 00:00:00.0')
-end_date = time_utils.strptime_to_utc_datetime('2022-01-01 11:59:59.0')
+end_date = time_utils.strptime_to_utc_datetime('2022-01-01 00:00:00.0')
 duration = (end_date - start_date) # in days
 duration =  round(duration.days / 365.25,2) # in years
 ofp = 5.0 # original forecast period (in years)
@@ -331,7 +331,7 @@ factor = duration / ofp # scaling factor
 seed = 123456
 
 
-# In[32]:
+# In[23]:
 
 
 HKJ = './forecasts/helmstetter_et_al.hkj.aftershock-fromXML.dat'
@@ -340,7 +340,7 @@ NEOKINEMA = './forecasts/bird_liu.neokinema-fromXML.dat'
 PI =  './forecasts/holliday.pi-fromXML.dat'
 
 
-# In[33]:
+# In[24]:
 
 
 HKJ_f = csep.load_gridded_forecast(HKJ, start_date=start_date, end_date=end_date, name='HKJ').scale(factor)
@@ -349,21 +349,21 @@ NEOKINEMA_f = csep.load_gridded_forecast(NEOKINEMA, start_date=start_date, end_d
 PI_f = csep.load_gridded_forecast(PI, start_date=start_date, end_date=end_date, name='PI').scale(factor)
 
 
-# In[34]:
+# In[25]:
 
 
 GEAR1_PI =  './forecasts/bird-et-al.gear1_in_pi.corrected-fromXML.dat' # GEAR1 in PI region
 GEAR1_EBEL = './forecasts/bird-et-al.gear1_in_ebel.corrected-fromXML.dat' # GEAR1 in EBEL region
 
 
-# In[35]:
+# In[26]:
 
 
 GEAR1_PI_f = csep.load_gridded_forecast(GEAR1_PI, start_date=start_date, end_date=end_date, name='GEAR1').scale(factor) # GEAR1 in PI
 GEAR1_EBEL_f = csep.load_gridded_forecast(GEAR1_EBEL, start_date=start_date, end_date=end_date, name='GEAR1').scale(factor) # GEAR1 in EBEL
 
 
-# In[36]:
+# In[27]:
 
 
 California = pd.DataFrame()
@@ -371,19 +371,19 @@ California['longitude'] = HKJ_f.get_longitudes()
 California['latitude'] = HKJ_f.get_latitudes()
 
 
-# In[37]:
+# In[28]:
 
 
 GEAR1_CSEPC = pd.merge(California, GEAR1_C, how="inner", on=['longitude', 'latitude'])
 
 
-# In[38]:
+# In[29]:
 
 
 GEAR1_CSEPC.to_csv('./forecasts/GEAR1495_California.dat')
 
 
-# In[39]:
+# In[30]:
 
 
 CCSEP_area = pd.DataFrame()
@@ -392,26 +392,26 @@ CCSEP_area['latitude'] = np.round(latsC,1)
 CCSEP_area['area'] = cell_areaC 
 
 
-# In[40]:
+# In[31]:
 
 
 GEAR1_CSEPCa = pd.merge(California, CCSEP_area, how="inner", on=['longitude', 'latitude'])
 
 
-# In[41]:
+# In[32]:
 
 
 GEAR1_CSEPCa.to_csv('./data/GEAR1a_California.dat')
 
 
-# In[42]:
+# In[33]:
 
 
 area_fname_C = './data/GEAR1a_California.dat'
 fname_C = './forecasts/GEAR1495_California.dat'
 
 
-# In[43]:
+# In[34]:
 
 
 def read_GEAR1_format(filename, area_filename, magnitudes):
@@ -447,7 +447,7 @@ def read_GEAR1_format(filename, area_filename, magnitudes):
     return incremental_yrly_rates, r, magnitudes
 
 
-# In[44]:
+# In[35]:
 
 
 GEAR1C_f = GriddedForecast.from_custom(read_GEAR1_format, name='GEAR1', func_args=(fname_C, area_fname_C, mws)).scale(factor)
@@ -455,47 +455,47 @@ GEAR1C_f = GriddedForecast.from_custom(read_GEAR1_format, name='GEAR1', func_arg
 
 # #### New Zealand
 
-# In[46]:
+# In[36]:
 
 
 GEAR1_NZlon = GEAR1[(GEAR1['longitude'] > 164.5) & (GEAR1['longitude'] < 179.5)]
 GEAR1_NZlat = GEAR1_NZlon[(GEAR1_NZlon['latitude'] > -48.5) & (GEAR1_NZlon['latitude'] < -33.5)]
 
 
-# In[47]:
+# In[37]:
 
 
 GEAR1_NZlat.to_csv('./forecasts/GEAR1_around_NZ.dat')
 
 
-# In[48]:
+# In[38]:
 
 
 area_NZlon = area[(area['longitude'] > 164.5) & (area['longitude'] < 179.5)]
 area_NZlat = area_NZlon[(area_NZlon['latitude'] > -48.5) & (area_NZlon['latitude'] < -33.5)]
 
 
-# In[49]:
+# In[39]:
 
 
 area_NZlat.to_csv('./data/areas_around_NZ.dat')
 
 
-# In[50]:
+# In[40]:
 
 
 area_fnameNZ = './data/areas_around_NZ.dat'
 fore_fnameNZ = './forecasts/GEAR1_around_NZ.dat'
 
 
-# In[51]:
+# In[41]:
 
 
 bulk_dataNZ = np.loadtxt(fore_fnameNZ, skiprows=1, delimiter=',')
 bulk_areaNZ = np.loadtxt(area_fnameNZ, skiprows=1, delimiter=',')
 
 
-# In[52]:
+# In[42]:
 
 
 cell_areaNZ = bulk_areaNZ[:,3]
@@ -504,7 +504,7 @@ lonsNZ = bulk_dataNZ[:,1] - offset
 latsNZ = bulk_dataNZ[:,2] - offset
 
 
-# In[53]:
+# In[43]:
 
 
 m595NZ = bulk_dataNZ[:,3] 
@@ -540,13 +540,13 @@ m885NZ = bulk_dataNZ[:,32]
 m895NZ = bulk_dataNZ[:,33] 
 
 
-# In[55]:
+# In[44]:
 
 
 b_NZ = 1.0
 
 
-# In[56]:
+# In[45]:
 
 
 GEAR1_NZ = pd.DataFrame() 
@@ -595,7 +595,7 @@ GEAR1_NZ['m885'] = m885NZ * 5.0
 GEAR1_NZ['m895'] = m895NZ * 5.0
 
 
-# In[57]:
+# In[46]:
 
 
 NZHM = './forecasts/NZHM_5year_rates-fromXML.dat'
@@ -603,7 +603,7 @@ PPE = './forecasts/nz5yrppe_c.dat'
 SUP = './forecasts/nz5yrsup_c.dat'
 
 
-# In[58]:
+# In[47]:
 
 
 NZHM_f = csep.load_gridded_forecast(NZHM, start_date=start_date, end_date=end_date, name='NZHM').scale(factor)
@@ -611,7 +611,7 @@ PPE_f = csep.load_gridded_forecast(PPE, start_date=start_date, end_date=end_date
 SUP_f = csep.load_gridded_forecast(SUP, start_date=start_date, end_date=end_date, name='SUP').scale(factor)
 
 
-# In[59]:
+# In[48]:
 
 
 NZ = pd.DataFrame()
@@ -619,19 +619,19 @@ NZ['longitude'] = NZHM_f.get_longitudes()
 NZ['latitude'] = NZHM_f.get_latitudes()
 
 
-# In[60]:
+# In[49]:
 
 
 GEAR1_CSEPNZ = pd.merge(NZ, GEAR1_NZ, how="inner", on=['longitude', 'latitude'])
 
 
-# In[61]:
+# In[50]:
 
 
 GEAR1_CSEPNZ.to_csv('./forecasts/GEAR1495_NZ.dat')
 
 
-# In[62]:
+# In[51]:
 
 
 NZCSEP_area = pd.DataFrame()
@@ -640,19 +640,19 @@ NZCSEP_area['latitude'] = np.round(latsNZ,1)
 NZCSEP_area['area'] = cell_areaNZ 
 
 
-# In[63]:
+# In[52]:
 
 
 GEAR1_CSEPNZa = pd.merge(NZ, NZCSEP_area, how="inner", on=['longitude', 'latitude'])
 
 
-# In[64]:
+# In[53]:
 
 
 GEAR1_CSEPNZa.to_csv('./data/GEAR1a_NZ.dat')
 
 
-# In[65]:
+# In[54]:
 
 
 area_fname_NZ = './data/GEAR1a_NZ.dat'
@@ -660,7 +660,7 @@ fname_NZ = './forecasts/GEAR1495_NZ.dat'
 fname2_NZ = './forecasts/KJSS495_NZ.dat'
 
 
-# In[66]:
+# In[55]:
 
 
 GEAR1NZ_f = GriddedForecast.from_custom(read_GEAR1_format, name='GEAR1', func_args=(fname_NZ, area_fname_NZ, mws)).scale(factor)
@@ -669,47 +669,47 @@ KJSSNZ_f = GriddedForecast.from_custom(read_GEAR1_format, name='KJSS', func_args
 
 # #### Italy
 
-# In[67]:
+# In[56]:
 
 
 GEAR1_Ilon = GEAR1[(GEAR1['longitude'] > 3.0) & (GEAR1['longitude'] < 22.0)]
 GEAR1_Ilat = GEAR1_Ilon[(GEAR1_Ilon['latitude'] > 35.0) & (GEAR1_Ilon['latitude'] < 48.0)]
 
 
-# In[68]:
+# In[57]:
 
 
 GEAR1_Ilat.to_csv('./data/GEAR1_around_Italy.dat')
 
 
-# In[69]:
+# In[58]:
 
 
 area_Ilon = area[(area['longitude'] > 3.0) & (area['longitude'] < 22.0)]
 area_Ilat = area_Ilon[(area_Ilon['latitude'] > 35.0) & (area_Ilon['latitude'] < 48.0)]
 
 
-# In[70]:
+# In[59]:
 
 
 area_Ilat.to_csv('./data/areas_around_Italy.dat')
 
 
-# In[71]:
+# In[60]:
 
 
 area_fnameI = './data/areas_around_Italy.dat'
 fore_fnameI = './forecasts/GEAR1_around_Italy.dat'
 
 
-# In[72]:
+# In[61]:
 
 
 bulk_dataI = np.loadtxt(fore_fnameI, skiprows=1, delimiter=',')
 bulk_areaI = np.loadtxt(area_fnameI, skiprows=1, delimiter=',')
 
 
-# In[73]:
+# In[62]:
 
 
 cell_areaI = bulk_areaI[:,3]
@@ -718,7 +718,7 @@ lonsI = bulk_dataI[:,1] - offset
 latsI = bulk_dataI[:,2] - offset
 
 
-# In[74]:
+# In[63]:
 
 
 m595I = bulk_dataI[:,3]
@@ -754,13 +754,13 @@ m885I = bulk_dataI[:,32]
 m895I = bulk_dataI[:,33] 
 
 
-# In[75]:
+# In[64]:
 
 
 b_Italy = 1.0
 
 
-# In[76]:
+# In[65]:
 
 
 GEAR1_I = pd.DataFrame() 
@@ -809,7 +809,7 @@ GEAR1_I['m885'] = m885I * 5.0
 GEAR1_I['m895'] = m895I * 5.0
 
 
-# In[77]:
+# In[66]:
 
 
 ALM = './forecasts/gulia-wiemer.ALM.italy.5yr.2010-01-01.dat'
@@ -826,7 +826,7 @@ TRIPLES_CSI = './forecasts/zechar.TripleS-CSI.italy.5yr.2010-01-01.dat'
 TRIPLES_HYBRID = './forecasts/zechar.TripleS-hybrid.italy.5yr.2010-01-01.dat'
 
 
-# In[78]:
+# In[67]:
 
 
 ALM_f = csep.load_gridded_forecast(ALM, start_date=start_date, end_date=end_date, swap_latlon=True, name='ALM').scale(factor)
@@ -843,7 +843,7 @@ TRIPLES_CSI_f = csep.load_gridded_forecast(TRIPLES_CSI, start_date=start_date, e
 TRIPLES_HYBRID_f = csep.load_gridded_forecast(TRIPLES_HYBRID, start_date=start_date, end_date=end_date, swap_latlon=True, name='TRIPLE_S-HYBRID').scale(factor)
 
 
-# In[79]:
+# In[68]:
 
 
 Italy = pd.DataFrame()
@@ -851,19 +851,19 @@ Italy['longitude'] = HRSS_CSI_f.get_longitudes()
 Italy['latitude'] = HRSS_CSI_f.get_latitudes()
 
 
-# In[80]:
+# In[69]:
 
 
 GEAR1_CSEPI = pd.merge(Italy, GEAR1_I, how="inner", on=['longitude', 'latitude'])
 
 
-# In[81]:
+# In[70]:
 
 
 GEAR1_CSEPI.to_csv('./forecasts/GEAR1495_Italy.dat')
 
 
-# In[82]:
+# In[71]:
 
 
 ICSEP_area = pd.DataFrame()
@@ -872,32 +872,32 @@ ICSEP_area['latitude'] = np.round(latsI,1)
 ICSEP_area['area'] = cell_areaI 
 
 
-# In[83]:
+# In[72]:
 
 
 GEAR1_CSEPIa = pd.merge(Italy, ICSEP_area, how="inner", on=['longitude', 'latitude'])
 
 
-# In[84]:
+# In[73]:
 
 
 GEAR1_CSEPIa.to_csv('./data/GEAR1495a_Italy.dat')
 
 
-# In[85]:
+# In[74]:
 
 
 area_fname_I = './data/GEAR1495a_Italy.dat'
 fname_I = './forecasts/GEAR1495_Italy.dat'
 
 
-# In[86]:
+# In[75]:
 
 
 GEAR1I_f = GriddedForecast.from_custom(read_GEAR1_format, name='GEAR1', func_args=(fname_I, area_fname_I, mws)).scale(factor * (1./1.602))
 
 
-# In[87]:
+# In[76]:
 
 
 def _get_basemap(basemap):
@@ -932,14 +932,14 @@ def _get_basemap(basemap):
 print ('Plotting global and regional seismicity forecasts on a map (Fig. 1)...')
 
 
-# In[88]:
+# In[78]:
 
 
 fig = plt.figure(figsize=(17,10))
 
 ax_GEAR1C = fig.add_subplot(231, projection=ccrs.PlateCarree(), adjustable='datalim')
 ax_GEAR1C.add_feature(cartopy.feature.STATES, facecolor='None', edgecolor='lightgrey', linewidth=1.5)
-ax_GEAR1C.add_image(_get_basemap('ESRI_imagery'), 6)
+ax_GEAR1C.add_image(_get_basemap('google-satellite'), 5)
 
 dh = round(GEAR1C_f.region.dh, 5)
 gl = ax_GEAR1C.gridlines()
@@ -974,7 +974,7 @@ ax_GEAR1C.plot(ptsC[:,0], ptsC[:,1], lw=1, color='black', transform=ccrs.PlateCa
 ax_GEAR1NZ = fig.add_subplot(232, projection=ccrs.PlateCarree(), adjustable='datalim')
 ax_GEAR1NZ.add_feature(cartopy.feature.BORDERS, color='lightgrey', linewidth=1.5, zorder=2)
 ax_GEAR1NZ.add_feature(cartopy.feature.COASTLINE, edgecolor='lightgrey', linewidth=1.5, zorder=2)
-ax_GEAR1NZ.add_image(_get_basemap('ESRI_imagery'), 6)
+ax_GEAR1NZ.add_image(_get_basemap('google-satellite'), 5)
 gl = ax_GEAR1NZ.gridlines()
 gl.xlines = False
 gl.ylines = False
@@ -1005,7 +1005,7 @@ ax_GEAR1NZ.plot(ptsNZ[:,0], ptsNZ[:,1], lw=1, color='black', transform=ccrs.Plat
 ax_GEAR1I = fig.add_subplot(233, projection=ccrs.PlateCarree(), adjustable='datalim')
 ax_GEAR1I.add_feature(cartopy.feature.BORDERS, color='lightgrey', linewidth=1.5, zorder=1)
 ax_GEAR1I.add_feature(cartopy.feature.COASTLINE, edgecolor='lightgrey', linewidth=1.5, zorder=1)
-ax_GEAR1I.add_image(_get_basemap('ESRI_imagery'), 6)
+ax_GEAR1I.add_image(_get_basemap('google-satellite'), 5)
 gl = ax_GEAR1I.gridlines()
 gl.xlines = False
 gl.ylines = False
@@ -1035,7 +1035,7 @@ ax_GEAR1I.plot(ptsI[:,0], ptsI[:,1], lw=1, color='black', transform=ccrs.PlateCa
 
 ax_HKJ = fig.add_subplot(234, projection=ccrs.PlateCarree(), adjustable='datalim')
 ax_HKJ.add_feature(cartopy.feature.STATES, facecolor='None', edgecolor='lightgrey', linewidth=1.5)
-ax_HKJ.add_image(_get_basemap('ESRI_imagery'), 6)
+ax_HKJ.add_image(_get_basemap('google-satellite'), 5)
 gl = ax_HKJ.gridlines()
 gl.xlines = False
 gl.ylines = False
@@ -1061,11 +1061,20 @@ scatter = ax_HKJ.scatter(HKJ_f.get_longitudes()+dh/2, HKJ_f.get_latitudes()+dh/2
 ax_HKJ.plot(ptsC[:,0], ptsC[:,1], lw=1, color='black', transform=ccrs.PlateCarree(), zorder=2)
 
 
+# The PPE forecast file includes a space-magnitude bin that falls outside of the CSEP New Zealand testing region
+PPE_f.get_latitudes_c = PPE_f.get_latitudes()
+PPE_f.get_latitudes_c[5957] = np.float('nan')
+
+PPE_f.get_longitudes_c = PPE_f.get_longitudes()
+PPE_f.get_longitudes_c[5957] = np.float('nan')
+
+PPE_f.spatial_counts_c = PPE_f.spatial_counts()
+PPE_f.spatial_counts_c[5957] = np.float('nan')
 
 ax_PPE = fig.add_subplot(235, projection=ccrs.PlateCarree(), adjustable='datalim')
 ax_PPE.add_feature(cartopy.feature.BORDERS, color='lightgrey', linewidth=1.5, zorder=2)
 ax_PPE.add_feature(cartopy.feature.COASTLINE, edgecolor='lightgrey', linewidth=1.5, zorder=2)
-ax_PPE.add_image(_get_basemap('ESRI_imagery'), 6)
+ax_PPE.add_image(_get_basemap('google-satellite'), 5)
 gl = ax_PPE.gridlines()
 gl.xlines = False
 gl.ylines = False
@@ -1080,13 +1089,13 @@ gl.xformatter = LONGITUDE_FORMATTER
 gl.ylocator = mticker.FixedLocator([-35, -38, -41, -44, -47])
 gl.yformatter = LATITUDE_FORMATTER
 
-ax_PPE.set_ylim(min(PPE_f.get_latitudes())-0.1+dh/2, max(PPE_f.get_latitudes())+0.1+dh/2)
-ax_PPE.set_xlim(min(PPE_f.get_longitudes())-0.1+dh/2, max(PPE_f.get_longitudes())+0.1+dh/2)
+ax_PPE.set_ylim(min(PPE_f.get_latitudes_c)-0.1+dh/2, max(PPE_f.get_latitudes_c)+0.1+dh/2)
+ax_PPE.set_xlim(min(PPE_f.get_longitudes_c)-0.1+dh/2, max(PPE_f.get_longitudes_c)+0.1+dh/2)
 ax_PPE.text(0.815, 0.95, f'{PPE_f.name}', fontsize=18, transform=ax_PPE.transAxes, verticalalignment='top', bbox=props)
 
     
-scatter = ax_PPE.scatter(PPE_f.get_longitudes()+dh/2, PPE_f.get_latitudes()+dh/2,  
-                           c = np.log10(PPE_f.spatial_counts()), cmap='inferno', s=5, vmin=-4.5, vmax=-0.5,
+scatter = ax_PPE.scatter(PPE_f.get_longitudes_c+dh/2, PPE_f.get_latitudes_c+dh/2,  
+                           c = np.log10(PPE_f.spatial_counts_c), cmap='inferno', s=5, vmin=-4.5, vmax=-0.5,
                            marker='s', alpha =1, edgecolor="None", zorder=1)
 
 ax_PPE.plot(ptsNZ[:,0], ptsNZ[:,1], lw=1, color='black', transform=ccrs.PlateCarree(), zorder=2)
@@ -1096,7 +1105,7 @@ ax_PPE.plot(ptsNZ[:,0], ptsNZ[:,1], lw=1, color='black', transform=ccrs.PlateCar
 ax_HRSS_CSI = fig.add_subplot(236, projection=ccrs.PlateCarree(), adjustable='datalim')
 ax_HRSS_CSI.add_feature(cartopy.feature.BORDERS, color='lightgrey', linewidth=1.5, zorder=1)
 ax_HRSS_CSI.add_feature(cartopy.feature.COASTLINE, edgecolor='lightgrey', linewidth=1.5, zorder=1)
-ax_HRSS_CSI.add_image(_get_basemap('ESRI_imagery'), 6)
+ax_HRSS_CSI.add_image(_get_basemap('google-satellite'), 5)
 gl = ax_HRSS_CSI.gridlines()
 gl.xlines = False
 gl.ylines = False
@@ -1125,14 +1134,14 @@ ax_HRSS_CSI.plot(ptsI[:,0], ptsI[:,1], lw=1, color='black', transform=ccrs.Plate
 plt.savefig('./output/TSR_Fig1_top.png', dpi=150, bbox_inches = 'tight')
 
 
-# In[89]:
+# In[79]:
 
 
 fig = plt.figure(figsize=(17,10))
 
 ax_NEOKINEMA = fig.add_subplot(231, projection=ccrs.PlateCarree(), adjustable='datalim')
 ax_NEOKINEMA.add_feature(cartopy.feature.STATES, facecolor='None', edgecolor='lightgrey', linewidth=1.5)
-ax_NEOKINEMA.add_image(_get_basemap('ESRI_imagery'), 6)
+ax_NEOKINEMA.add_image(_get_basemap('google-satellite'), 5)
 gl = ax_NEOKINEMA.gridlines()
 gl.xlines = False
 gl.ylines = False
@@ -1164,7 +1173,7 @@ ax_NEOKINEMA.plot(ptsC[:,0], ptsC[:,1], lw=1, color='black', transform=ccrs.Plat
 ax_NZHM = fig.add_subplot(232, projection=ccrs.PlateCarree(), adjustable='datalim')
 ax_NZHM.add_feature(cartopy.feature.BORDERS, color='lightgrey', linewidth=1.5, zorder=2)
 ax_NZHM.add_feature(cartopy.feature.COASTLINE, edgecolor='lightgrey', linewidth=1.5, zorder=2)
-ax_NZHM.add_image(_get_basemap('ESRI_imagery'), 6)
+ax_NZHM.add_image(_get_basemap('google-satellite'), 5)
 gl = ax_NZHM.gridlines()
 gl.xlines = False
 gl.ylines = False
@@ -1196,7 +1205,7 @@ ax_NZHM.plot(ptsNZ[:,0], ptsNZ[:,1], lw=1, color='black', transform=ccrs.PlateCa
 ax_ALM_IT = fig.add_subplot(233, projection=ccrs.PlateCarree(), adjustable='datalim')
 ax_ALM_IT.add_feature(cartopy.feature.BORDERS, color='lightgrey', linewidth=1.5, zorder=1)
 ax_ALM_IT.add_feature(cartopy.feature.COASTLINE, edgecolor='lightgrey', linewidth=1.5, zorder=1)
-ax_ALM_IT.add_image(_get_basemap('ESRI_imagery'), 6)
+ax_ALM_IT.add_image(_get_basemap('google-satellite'), 5)
 gl = ax_ALM_IT.gridlines()
 gl.xlines = False
 gl.ylines = False
@@ -1226,7 +1235,7 @@ ax_ALM_IT.plot(ptsI[:,0], ptsI[:,1], lw=1, color='black', transform=ccrs.PlateCa
 
 ax_EBEL = fig.add_subplot(234, projection=ccrs.PlateCarree(), adjustable='datalim')
 ax_EBEL.add_feature(cartopy.feature.STATES, facecolor='None', edgecolor='lightgrey', linewidth=1.5)
-ax_EBEL.add_image(_get_basemap('ESRI_imagery'), 6)
+ax_EBEL.add_image(_get_basemap('google-satellite'), 5)
 gl = ax_EBEL.gridlines()
 gl.xlines = False
 gl.ylines = False
@@ -1253,12 +1262,20 @@ scatter = ax_EBEL.scatter(EBEL_ET_AL_f.get_longitudes()+dh/2, EBEL_ET_AL_f.get_l
 ax_EBEL.plot(ptsC[:,0], ptsC[:,1], lw=1, color='black', transform=ccrs.PlateCarree(), zorder=2)
 
 
+# The SUP forecast file includes a space-magnitude bin that falls outside of the CSEP New Zealand testing region
+SUP_f.get_latitudes_c = SUP_f.get_latitudes()
+SUP_f.get_latitudes_c[5957] = np.float('nan')
 
+SUP_f.get_longitudes_c = SUP_f.get_longitudes()
+SUP_f.get_longitudes_c[5957] = np.float('nan')
+
+SUP_f.spatial_counts_c = SUP_f.spatial_counts()
+SUP_f.spatial_counts_c[5957] = np.float('nan')
 
 ax_SUP = fig.add_subplot(235, projection=ccrs.PlateCarree(), adjustable='datalim')
 ax_SUP.add_feature(cartopy.feature.BORDERS, color='lightgrey', linewidth=1.5, zorder=2)
 ax_SUP.add_feature(cartopy.feature.COASTLINE, edgecolor='lightgrey', linewidth=1.5, zorder=2)
-ax_SUP.add_image(_get_basemap('ESRI_imagery'), 6)
+ax_SUP.add_image(_get_basemap('google-satellite'), 5)
 gl = ax_SUP.gridlines()
 gl.xlines = False
 gl.ylines = False
@@ -1273,13 +1290,13 @@ gl.xformatter = LONGITUDE_FORMATTER
 gl.ylocator = mticker.FixedLocator([-35, -38, -41, -44, -47])
 gl.yformatter = LATITUDE_FORMATTER
 
-ax_SUP.set_ylim(min(SUP_f.get_latitudes())-0.1+dh/2, max(SUP_f.get_latitudes())+0.1+dh/2)
-ax_SUP.set_xlim(min(SUP_f.get_longitudes())-0.1+dh/2, max(SUP_f.get_longitudes())+0.1+dh/2)
+ax_SUP.set_ylim(min(SUP_f.get_latitudes_c)-0.1+dh/2, max(SUP_f.get_latitudes_c)+0.1+dh/2)
+ax_SUP.set_xlim(min(SUP_f.get_longitudes_c)-0.1+dh/2, max(SUP_f.get_longitudes_c)+0.1+dh/2)
 ax_SUP.text(0.808, 0.95, f'{SUP_f.name}', fontsize=18, transform=ax_SUP.transAxes, verticalalignment='top', bbox=props)
 
     
-scatter = ax_SUP.scatter(SUP_f.get_longitudes()+dh/2, SUP_f.get_latitudes()+dh/2,  
-                           c = np.log10(SUP_f.spatial_counts()), cmap='inferno', s=5, vmin=-5, vmax=0,
+scatter = ax_SUP.scatter(SUP_f.get_longitudes_c+dh/2, SUP_f.get_latitudes_c+dh/2,  
+                           c = np.log10(SUP_f.spatial_counts_c), cmap='inferno', s=5, vmin=-5, vmax=0,
                            marker='s', alpha =1, edgecolor="None", zorder=1)
 
 ax_SUP.plot(ptsNZ[:,0], ptsNZ[:,1], lw=1, color='black', transform=ccrs.PlateCarree(), zorder=2)
@@ -1289,7 +1306,7 @@ ax_SUP.plot(ptsNZ[:,0], ptsNZ[:,1], lw=1, color='black', transform=ccrs.PlateCar
 ax_TRIPLES_CPTI = fig.add_subplot(236, projection=ccrs.PlateCarree(), adjustable='datalim')
 ax_TRIPLES_CPTI.add_feature(cartopy.feature.BORDERS, color='lightgrey', linewidth=1.5, zorder=1)
 ax_TRIPLES_CPTI.add_feature(cartopy.feature.COASTLINE, edgecolor='lightgrey', linewidth=1.5, zorder=1)
-ax_TRIPLES_CPTI.add_image(_get_basemap('ESRI_imagery'), 6)
+ax_TRIPLES_CPTI.add_image(_get_basemap('google-satellite'), 5)
 gl = ax_TRIPLES_CPTI.gridlines()
 gl.xlines = False
 gl.ylines = False
@@ -1333,15 +1350,7 @@ print ('Reading target earthquake catalogs...')
 
 # #### California
 
-# In[99]:
-
-
-# Earthquake catalog with the whole CSEP-California testing region:
-#catalog_Cali1 = csep.query_comcat(start_time=start_date, end_time=end_date, min_magnitude = NEOKINEMA_f.min_magnitude)
-#catalog_California = catalog_Cali1.filter_spatial(NEOKINEMA_f.region, in_place=False)
-
-
-# In[95]:
+# In[81]:
 
 
 # The user can download the catalog and then save it:
@@ -1349,48 +1358,48 @@ print ('Reading target earthquake catalogs...')
  #   pickle.dump(catalog_California, obj)
 
 
-# In[90]:
+# In[82]:
 
 
 with open('./data/ANSS_catalog2021.obj', 'rb') as obj:
     cat = pickle.load(obj)
 
 
-# In[91]:
+# In[83]:
 
 
 # Earthquake catalog within the NEOKINEMA testing region:
 catalog_California1 = cat.filter_spatial(GEAR1C_f.region, in_place=False)
 
 
-# In[92]:
+# In[84]:
 
 
 catalog_California1.event_count
 
 
-# In[93]:
+# In[85]:
 
 
 with open('./data/ANSS_catalog2021.obj', 'rb') as obj:
     cat = pickle.load(obj)
 
 
-# In[94]:
+# In[86]:
 
 
 # Earthquake catalog within the PI testing region:
 catalog_California2 = cat.filter_spatial(PI_f.region, in_place=False)
 
 
-# In[95]:
+# In[87]:
 
 
 with open('./data/ANSS_catalog2021.obj', 'rb') as obj:
     cat = pickle.load(obj)
 
 
-# In[96]:
+# In[88]:
 
 
 # Earthquake catalog within the EBEL testing region:
@@ -1399,13 +1408,13 @@ catalog_California3 = cat.filter_spatial(EBEL_ET_AL_f.region, in_place=False)
 
 # #### New Zealand
 
-# In[97]:
+# In[89]:
 
 
 GeoNet = './data/GeoNet_catalog2021.txt'
 
 
-# In[98]:
+# In[90]:
 
 
 bulk_data = np.loadtxt(GeoNet, skiprows=1, delimiter=' ''\t', dtype='str')
@@ -1417,7 +1426,7 @@ depth = bulk_data[:,13]
 magnitude = bulk_data[:,11]
 
 
-# In[99]:
+# In[91]:
 
 
 dt = []
@@ -1425,7 +1434,7 @@ for i in range (len(origin_time)):
     dt.append(str(datetime.datetime.strptime(origin_time[i],'%Y%m%d%H%M%S')))
 
 
-# In[100]:
+# In[92]:
 
 
 dt2 = []
@@ -1434,33 +1443,33 @@ for i in range (len(dt)):
     dt2.append(time_utils.strptime_to_utc_epoch(dt[i]))
 
 
-# In[101]:
+# In[93]:
 
 
 eventlist = np.column_stack([idx, dt2, latitude, longitude, depth, magnitude])
 
 
-# In[102]:
+# In[94]:
 
 
 array_of_tuples = map(tuple, eventlist)
 tuple_of_tuples = tuple(array_of_tuples)
 
 
-# In[103]:
+# In[95]:
 
 
 start_date = time_utils.strptime_to_utc_epoch('2014-01-01 00:00:00.0')
-end_date = time_utils.strptime_to_utc_epoch('2021-12-31 11:59:59.0')
+end_date = time_utils.strptime_to_utc_epoch('2022-01-01 00:00:00.0')
 
 
-# In[104]:
+# In[96]:
 
 
 catalog_NZ = csep.catalogs.CSEPCatalog(data=tuple_of_tuples)
 
 
-# In[105]:
+# In[97]:
 
 
 catalog_NZ.filter(f'origin_time >= {start_date}')
@@ -1470,19 +1479,19 @@ catalog_NZ.filter('depth < 40.0')
 catalog_NZ.filter_spatial(region=NZHM_f.region, update_stats=False, in_place=True)
 
 
-# In[106]:
+# In[98]:
 
 
 catalog_NZ.event_count
 
 
-# In[107]:
+# In[99]:
 
 
 catalog_NZP = csep.catalogs.CSEPCatalog(data=tuple_of_tuples)
 
 
-# In[108]:
+# In[100]:
 
 
 catalog_NZP.filter(f'origin_time >= {start_date}')
@@ -1494,13 +1503,13 @@ catalog_NZP.filter_spatial(region=PPE_f.region, update_stats=False, in_place=Tru
 
 # #### Italy
 
-# In[109]:
+# In[101]:
 
 
 BSI = './data/BSI_catalog2021.dat'
 
 
-# In[110]:
+# In[102]:
 
 
 bulk_data = np.loadtxt(BSI, skiprows=1, delimiter='|', dtype='str')
@@ -1512,7 +1521,7 @@ depth = bulk_data[:,4]
 magnitude = bulk_data[:,10]
 
 
-# In[111]:
+# In[103]:
 
 
 dt = []
@@ -1520,7 +1529,7 @@ for i in range (len(origin_time)):
     dt.append(str(datetime.datetime.fromisoformat(origin_time[i])))  
 
 
-# In[112]:
+# In[104]:
 
 
 dt2 = []
@@ -1529,7 +1538,7 @@ for i in range (len(dt)):
     dt2.append(time_utils.strptime_to_utc_epoch(dt[i]))
 
 
-# In[113]:
+# In[105]:
 
 
 eventlist = np.column_stack([idx, dt2, latitude, longitude, depth, magnitude])
@@ -1537,19 +1546,19 @@ array_of_tuples = map(tuple, eventlist)
 tuple_of_tuples = tuple(array_of_tuples)
 
 
-# In[114]:
+# In[106]:
 
 
 catalog_Italy = csep.catalogs.CSEPCatalog(data=tuple_of_tuples)
 
 
-# In[115]:
+# In[107]:
 
 
 CSEP_Italy = csep.core.regions.italy_csep_region(dh_scale=1, magnitudes=mws, name='csep-italy')
 
 
-# In[116]:
+# In[108]:
 
 
 catalog_Italy.filter(f'origin_time >= {start_date}')
@@ -1559,7 +1568,7 @@ catalog_Italy.filter('depth < 30.0')
 catalog_Italy.filter_spatial(region=GEAR1I_f.region, update_stats=False, in_place=True)
 
 
-# In[117]:
+# In[109]:
 
 
 catalog_Italy.event_count
@@ -1571,7 +1580,7 @@ catalog_Italy.event_count
 print ('Printing earthquake catalogs on a map (Fig. 2)...')
 
 
-# In[118]:
+# In[111]:
 
 
 fig = plt.figure(figsize=(16.5, 5))
@@ -1691,7 +1700,7 @@ print ('Running prospective comparisons between global and regional earthquake f
 
 # #### California
 
-# In[119]:
+# In[113]:
 
 
 ttest_HKJ_GEAR1 = poisson.paired_t_test(HKJ_f, GEAR1C_f, catalog_California1)
@@ -1700,13 +1709,13 @@ ttest_PI_GEAR1 = poisson.paired_t_test(PI_f, GEAR1_PI_f, catalog_California2)
 ttest_EBEL_GEAR1 = poisson.paired_t_test(EBEL_ET_AL_f, GEAR1_EBEL_f, catalog_California3)
 
 
-# In[120]:
+# In[114]:
 
 
 poisson_TtestsC = [ttest_HKJ_GEAR1, ttest_NEOKINEMA_GEAR1, ttest_PI_GEAR1, ttest_EBEL_GEAR1]
 
 
-# In[121]:
+# In[115]:
 
 
 def plot_comparison_test(results_t, n_models, plot_args=None):
@@ -1738,7 +1747,7 @@ def plot_comparison_test(results_t, n_models, plot_args=None):
             ax.plot(index, result.observed_statistic, 'ok', marker="^", markersize=15, color='#377eb8') #blue
         
     
-    ax.set_xticklabels([res.sim_name[0] for res in results_t], fontsize=25)
+    ax.set_xticklabels([res.sim_name[0] for res in results_t], fontsize=22)
     ax.set_yticklabels([-3, -2, -1, 0, 1, 2, 3],fontsize=22, rotation=90)
     ax.set_xticks(np.arange(len(results_t)))
     ax.set_xlabel(xlabel, fontsize=22)
@@ -1748,7 +1757,7 @@ def plot_comparison_test(results_t, n_models, plot_args=None):
     return ax
 
 
-# In[122]:
+# In[116]:
 
 
 plt.figure()
@@ -1772,7 +1781,7 @@ plt.savefig('./output/TSR_Fig3_California.png', dpi=150, bbox_inches = 'tight')
 
 # #### New Zealand
 
-# In[123]:
+# In[117]:
 
 
 ttest_NZHM_GEAR1 = poisson.paired_t_test(NZHM_f, GEAR1NZ_f, catalog_NZ)
@@ -1780,13 +1789,13 @@ ttest_PPE_GEAR1 = poisson.paired_t_test(PPE_f, GEAR1NZ_f, catalog_NZ)
 ttest_SUP_GEAR1 = poisson.paired_t_test(SUP_f, GEAR1NZ_f, catalog_NZ)
 
 
-# In[124]:
+# In[118]:
 
 
 poisson_TtestsNZ = [ttest_NZHM_GEAR1, ttest_PPE_GEAR1, ttest_SUP_GEAR1]
 
 
-# In[125]:
+# In[119]:
 
 
 plt.figure()
@@ -1811,7 +1820,7 @@ plt.savefig('./output/TSR_Fig3_NZ.png', dpi=150, bbox_inches = 'tight')
 
 # #### Italy
 
-# In[126]:
+# In[120]:
 
 
 ttest_ALM_GEAR1 = poisson.paired_t_test(ALM_f, GEAR1I_f, catalog_Italy)
@@ -1828,7 +1837,7 @@ ttest_TRIPLES_CSI_GEAR1 = poisson.paired_t_test(TRIPLES_CSI_f, GEAR1I_f, catalog
 ttest_TRIPLES_HYBRID_GEAR1 = poisson.paired_t_test(TRIPLES_HYBRID_f, GEAR1I_f, catalog_Italy)
 
 
-# In[127]:
+# In[121]:
 
 
 poisson_TtestsI = [ttest_ALM_GEAR1, ttest_HALM_GEAR1, ttest_ALM_IT_GEAR1,  ttest_MPS04_AFTER_GEAR1, 
@@ -1836,7 +1845,7 @@ poisson_TtestsI = [ttest_ALM_GEAR1, ttest_HALM_GEAR1, ttest_ALM_IT_GEAR1,  ttest
                    ttest_HRSS_HYBRID_GEAR1, ttest_TRIPLES_CPTI_GEAR1, ttest_TRIPLES_CSI_GEAR1, ttest_TRIPLES_HYBRID_GEAR1]
 
 
-# In[128]:
+# In[122]:
 
 
 plt.figure()
@@ -1862,7 +1871,7 @@ ax_ct.bar(xTickPos, height=10, width=1, bottom=min(ax_ct.get_yticks()), align='c
 plt.savefig('./output/TSR_Fig3_Italy.png', dpi=150, bbox_inches = 'tight')
 
 
-# In[130]:
+# In[123]:
 
 
 fig = plt.figure(figsize=(15,10))
@@ -1905,7 +1914,7 @@ print ('Analizing the spatial dimension of the forecasts (Fig. 4)...')
 
 # #### California
 
-# In[131]:
+# In[125]:
 
 
 stest_GEAR1C = poisson.spatial_test(GEAR1C_f, catalog_California1, seed=seed)
@@ -1915,7 +1924,7 @@ stest_PI = poisson.spatial_test(PI_f, catalog_California1, seed=seed)
 stest_EBEL = poisson.spatial_test(EBEL_ET_AL_f, catalog_California1, seed=seed)
 
 
-# In[132]:
+# In[126]:
 
 
 jPOLLs_C = [stest_GEAR1C.observed_statistic, stest_HKJ.observed_statistic,stest_NEOKINEMA.observed_statistic, 
@@ -1927,7 +1936,7 @@ for i in range(len(jPOLLs_C)):
     jPOLLs_Cc.append(jPOLLs_C[i] / catalog_California1.event_count)
 
 
-# In[133]:
+# In[127]:
 
 
 def compute_gini(forecast):
@@ -1953,7 +1962,7 @@ def compute_gini(forecast):
     return g
 
 
-# In[134]:
+# In[128]:
 
 
 gini_GEAR1C = compute_gini(GEAR1C_f)
@@ -1963,7 +1972,7 @@ gini_PI = compute_gini(PI_f)
 gini_EBEL_ET_AL = compute_gini(EBEL_ET_AL_f)
 
 
-# In[135]:
+# In[129]:
 
 
 GINIS_C = [gini_HKJ, gini_NEOKINEMA, gini_PI, gini_EBEL_ET_AL]
@@ -1972,7 +1981,7 @@ GINIS_C2 = [gini_GEAR1C, gini_HKJ, gini_NEOKINEMA, gini_PI, gini_EBEL_ET_AL]
 
 # #### New Zealand
 
-# In[136]:
+# In[130]:
 
 
 stest_GEAR1NZ = poisson.spatial_test(GEAR1NZ_f, catalog_NZ, seed=seed)
@@ -1981,7 +1990,7 @@ stest_PPE = poisson.spatial_test(PPE_f, catalog_NZ, seed=seed)
 stest_SUP = poisson.spatial_test(SUP_f, catalog_NZ,seed=seed)
 
 
-# In[137]:
+# In[131]:
 
 
 jPOLLs_NZ = [stest_GEAR1NZ.observed_statistic, stest_NZHM.observed_statistic, stest_PPE.observed_statistic,
@@ -1993,7 +2002,7 @@ for i in range(len(jPOLLs_NZ)):
     jPOLLs_NZc.append(jPOLLs_NZ[i] / catalog_NZ.event_count)
 
 
-# In[138]:
+# In[132]:
 
 
 gini_GEAR1NZ = compute_gini(GEAR1NZ_f)
@@ -2002,7 +2011,7 @@ gini_PPE = compute_gini(PPE_f)
 gini_SUP = compute_gini(SUP_f)
 
 
-# In[139]:
+# In[133]:
 
 
 GINIS_NZ = [gini_NZHM, gini_PPE, gini_SUP]
@@ -2011,7 +2020,7 @@ GINIS_NZ2 = [gini_GEAR1NZ, gini_NZHM, gini_PPE, gini_SUP]
 
 # #### Italy
 
-# In[140]:
+# In[134]:
 
 
 stest_GEAR1I = poisson.spatial_test(GEAR1I_f, catalog_Italy, seed=seed)
@@ -2029,7 +2038,7 @@ stest_TRIPLES_CSI = poisson.spatial_test(TRIPLES_CSI_f, catalog_Italy, seed=seed
 stest_TRIPLES_HYBRID = poisson.spatial_test(TRIPLES_HYBRID_f, catalog_Italy, seed=seed)
 
 
-# In[141]:
+# In[135]:
 
 
 jPOLLs_I = [stest_GEAR1I.observed_statistic, stest_ALM.observed_statistic, stest_HALM.observed_statistic, 
@@ -2044,7 +2053,7 @@ for i in range(len(jPOLLs_I)):
     jPOLLs_Ic.append(jPOLLs_I[i] / catalog_Italy.event_count)
 
 
-# In[142]:
+# In[136]:
 
 
 gini_GEAR1I = compute_gini(GEAR1I_f)
@@ -2062,7 +2071,7 @@ gini_TRIPLES_CSI = compute_gini(TRIPLES_CSI_f)
 gini_TRIPLES_HYBRID = compute_gini(TRIPLES_HYBRID_f)
 
 
-# In[143]:
+# In[137]:
 
 
 GINIS_I = [gini_ALM, gini_HALM, gini_ALM_IT, gini_MPS04_AFTER, gini_HAZGRIDX, gini_HZATI, gini_RI, 
@@ -2071,7 +2080,7 @@ GINIS_I2 = [gini_GEAR1I, gini_ALM, gini_HALM, gini_ALM_IT, gini_MPS04_AFTER, gin
          gini_HRSS_CSI, gini_HRSS_HYBRID, gini_TRIPLES_CPTI, gini_TRIPLES_CSI, gini_TRIPLES_HYBRID]
 
 
-# In[145]:
+# In[138]:
 
 
 fig, ax = plt.subplots(figsize=(8,8))
@@ -2095,7 +2104,7 @@ for i in range(len(models_I)):
      ax.text(GINIS_I2[i] - 0.1, jPOLLs_Ic[i] -0.015, f'{models_I[i]}', fontsize=12, rotation=0, zorder=1)         
 
 x = ['0.3','0.4','0.5','0.6','0.7','0.8','0.9','1.0']    
-y=['','-8.0', '-7.0','-6.0', '-5.0', '4.0']
+y=['','-8.0', '-7.0','-6.0', '-5.0', '-4.0']
  
 ax.set_xlim(0.3, 1.0)
 ax.set_ylim(-8.5, -3.5)
@@ -2110,67 +2119,34 @@ plt.savefig('./output/TSR_Fig4a.png', dpi=150, bbox_inches = 'tight')
 
 # ### SPATIAL ANALYSIS (Binomial distribution)
 
-# In[83]:
+# In[139]:
 
 
 def _simulate_catalog(num_events, sampling_weights, sim_fore, random_numbers=None):
-
+    # Asim modified this code to generate simulations in a way that every cell gets one earthquake. 
     # generate uniformly distributed random numbers in [0,1), this
+    #print('-----Simulating catalogs')
     if random_numbers is None:
-        random_numbers = np.random.rand(num_events)
-    else:
-        # TODO: ensure that random numbers are all between 0 and 1.
-        pass
-
-    # reset simulation array to zero, but don't reallocate
-    sim_fore.fill(0)
-
-    # find insertion points using binary search inserting to satisfy a[i-1] <= v < a[i]
-    pnts = np.searchsorted(sampling_weights, random_numbers, side='right')
-
-    # create simulated catalog by adding to the original locations
-    np.add.at(sim_fore, pnts, 1)
-    assert sim_fore.sum() == num_events, "simulated the wrong number of events!"
-
-    return sim_fore
-
-
-# In[146]:
-
-
-def _simulate_catalog(num_events, sampling_weights, sim_fore, random_numbers=None):
-    #Asim -- Modified this code to generate simulations in a way that every cell gets one earthquake.
-    # generate uniformly distributed random numbers in [0,1), this
-    if random_numbers is None:
-        random_numbers = numpy.random.rand(num_events)
-    else:
-        # TODO: ensure that random numbers are all between 0 and 1.
-        pass
-
-    # reset simulation array to zero, but don't reallocate
-    sim_fore.fill(0)
-    
-    # ---- Asim changes
-#    # find insertion points using binary search inserting to satisfy a[i-1] <= v < a[i]
-#    pnts = numpy.searchsorted(sampling_weights, random_numbers, side='right')
-#
-#    # create simulated catalog by adding to the original locations
-#    numpy.add.at(sim_fore, pnts, 1)
-#    assert sim_fore.sum() == num_events, "simulated the wrong number of events!"
-    
-    #-- Change the simulation code in such a way that every cells grid only one earthquake.
-    eqs = 0
-    while eqs < num_events:
+        # reset simulation array to zero, but don't reallocate
+        sim_fore.fill(0)
+        eqs = 0
+        while eqs < num_events:
             random_num = numpy.random.uniform(0,1)
             loc = numpy.searchsorted(sampling_weights, random_num)
             if sim_fore[loc] == 0:
-                numpy.add.at(sim_fore, loc, 1)
+                sim_fore[loc]=sim_fore[loc]+1
                 eqs = eqs+1
+    else:
+        #find insertion points using binary search inserting to satisfy a[i-1] <= v < a[i]
+        pnts = numpy.searchsorted(sampling_weights, random_numbers, side='right')
+        #create simulated catalog by adding to the original locations
+        numpy.add.at(sim_fore, pnts, 1)
     
+    assert sim_fore.sum() == num_events, "simulated the wrong number of events!"
     return sim_fore
 
 
-# In[147]:
+# In[140]:
 
 
 def binomial_joint_log_likelihood_ndarray(forecast, catalog):
@@ -2200,7 +2176,7 @@ def binomial_joint_log_likelihood_ndarray(forecast, catalog):
     return sum(first_term.data + second_term.data)
 
 
-# In[148]:
+# In[141]:
 
 
 def _binomial_likelihood_test(forecast_data, observed_data, num_simulations=1000, random_numbers=None, 
@@ -2277,7 +2253,7 @@ def _binomial_likelihood_test(forecast_data, observed_data, num_simulations=1000
     return qs, obs_ll, simulated_ll
 
 
-# In[149]:
+# In[142]:
 
 
 def binary_spatial_test(gridded_forecast, observed_catalog, num_simulations=1000, seed=None, random_numbers=None, verbose=False):
@@ -2326,7 +2302,7 @@ def binary_spatial_test(gridded_forecast, observed_catalog, num_simulations=1000
 
 # #### California
 
-# In[150]:
+# In[143]:
 
 
 sbtest_GEAR1C = binary_spatial_test(GEAR1C_f, catalog_California1, seed=seed)
@@ -2336,7 +2312,7 @@ sbtest_PI = binary_spatial_test(PI_f, catalog_California1, seed=seed)
 sbtest_EBEL = binary_spatial_test(EBEL_ET_AL_f, catalog_California1, seed=seed)
 
 
-# In[151]:
+# In[144]:
 
 
 jBILLs_C = [sbtest_GEAR1C.observed_statistic, sbtest_HKJ.observed_statistic,sbtest_NEOKINEMA.observed_statistic, 
@@ -2350,7 +2326,7 @@ for i in range(len(jBILLs_C)):
 
 # #### New Zealand
 
-# In[152]:
+# In[145]:
 
 
 sbtest_GEAR1NZ = binary_spatial_test(GEAR1NZ_f, catalog_NZ, seed=seed)
@@ -2359,7 +2335,7 @@ sbtest_PPE = binary_spatial_test(PPE_f, catalog_NZ, seed=seed)
 sbtest_SUP = binary_spatial_test(SUP_f, catalog_NZ, seed=seed)
 
 
-# In[153]:
+# In[146]:
 
 
 jBILLs_NZ = [sbtest_GEAR1NZ.observed_statistic, sbtest_NZHM.observed_statistic, sbtest_PPE.observed_statistic,
@@ -2373,7 +2349,7 @@ for i in range(len(jBILLs_NZ)):
 
 # #### Italy
 
-# In[154]:
+# In[147]:
 
 
 sbtest_GEAR1I = binary_spatial_test(GEAR1I_f, catalog_Italy, seed=seed)
@@ -2391,7 +2367,7 @@ sbtest_TRIPLES_CSI = binary_spatial_test(TRIPLES_CSI_f, catalog_Italy, seed=seed
 sbtest_TRIPLES_HYBRID = binary_spatial_test(TRIPLES_HYBRID_f, catalog_Italy, seed=seed)
 
 
-# In[155]:
+# In[148]:
 
 
 jBILLs_I = [sbtest_GEAR1I.observed_statistic, sbtest_ALM.observed_statistic, sbtest_HALM.observed_statistic, 
@@ -2406,7 +2382,7 @@ for i in range(len(jBILLs_I)):
     jBILLs_Ic.append(jBILLs_I[i] / catalog_Italy.event_count)
 
 
-# In[156]:
+# In[149]:
 
 
 fig, ax = plt.subplots(figsize=(8,8))
@@ -2452,7 +2428,7 @@ plt.savefig('./output/TSR_Fig4b.png', dpi=150, bbox_inches = 'tight')
 print ('Creating supplemental material to the manuscript...')
 
 
-# In[157]:
+# In[151]:
 
 
 def _plot_diff_spatial_likelihood(forecast1, forecast2, catalog, diff_LL, markersizem, marker_sizedLL, bg, lf):
@@ -2473,7 +2449,7 @@ def _plot_diff_spatial_likelihood(forecast1, forecast2, catalog, diff_LL, marker
     
     # We define some plot parameters for the figure:
     ax_dLL = fig.add_subplot(111, projection=ccrs.PlateCarree())
-    ax_dLL.add_image(_get_basemap('ESRI_imagery'), 6)
+    ax_dLL.add_image(_get_basemap('google-satellite'), 5)
     ax_dLL.set_facecolor('lightgrey')
     dh = round(forecast1.region.dh, 5)
     gldLL = ax_dLL.gridlines(draw_labels=True, alpha=0)
@@ -2526,7 +2502,7 @@ def _plot_diff_spatial_likelihood(forecast1, forecast2, catalog, diff_LL, marker
     return ax_dLL
 
 
-# In[158]:
+# In[152]:
 
 
 BILL_GEAR1 = poisson.binary_spatial_likelihood(GEAR1NZ_f, catalog_NZ)
@@ -2534,14 +2510,14 @@ BILL_KJSS = poisson.binary_spatial_likelihood(KJSSNZ_f, catalog_NZ)
 BILL_NZHM = poisson.binary_spatial_likelihood(NZHM_f, catalog_NZ)
 
 
-# In[159]:
+# In[153]:
 
 
 diff_GEAR1_NZHM = BILL_GEAR1 - BILL_NZHM
 diff_KJSS_NZHM = BILL_KJSS - BILL_NZHM
 
 
-# In[160]:
+# In[154]:
 
 
 fig = plt.figure(figsize=(10,20))
@@ -2550,7 +2526,7 @@ ax_dBILL_GEAR1_NZHM.text(165.6, -33., 'a)', fontsize =22, color='black')
 plt.savefig('./output/TSR_S1a.png', dpi=150, bbox_inches = 'tight')
 
 
-# In[161]:
+# In[155]:
 
 
 fig = plt.figure(figsize=(10,20))
@@ -2565,7 +2541,7 @@ plt.savefig('./output/TSR_S1b.png', dpi=150, bbox_inches = 'tight')
 
 # #### Poisson Number Test
 
-# In[162]:
+# In[156]:
 
 
 ntest_GEAR1 = poisson.number_test(GEAR1C_f, catalog_California1)
@@ -2575,7 +2551,7 @@ ntest_NEOKINEMA = poisson.number_test(NEOKINEMA_f, catalog_California1)
 ntest_PI = poisson.number_test(PI_f, catalog_California1)
 
 
-# In[163]:
+# In[157]:
 
 
 def _get_marker_style(obs_stat, p, one_sided_lower):
@@ -2594,7 +2570,7 @@ def _get_marker_style(obs_stat, p, one_sided_lower):
     return fmt
 
 
-# In[164]:
+# In[158]:
 
 
 def _get_axis_limits(pnts, border=0.05):
@@ -2605,10 +2581,10 @@ def _get_axis_limits(pnts, border=0.05):
     return (x_min-xd, x_max+xd)
 
 
-# In[165]:
+# In[159]:
 
 
-def plot_consistency_test(eval_results, normalize=False, one_sided_lower=True, plot_args=None, variance=None):
+def plot_consistency_test(eval_results, n_models, normalize=False, one_sided_lower=True, plot_args=None, variance=None):
     """ Plots results from CSEP1 tests following the CSEP1 convention.
     Note: All of the evaluations should be from the same type of evaluation, otherwise the results will not be
           comparable on the same figure.
@@ -2656,7 +2632,8 @@ def plot_consistency_test(eval_results, normalize=False, one_sided_lower=True, p
     tight_layout = plot_args.get('tight_layout', True)
     percentile = plot_args.get('percentile', 95)
 
-    fig, ax = pyplot.subplots(figsize=figsize)
+    fig, ax = plt.subplots(figsize=(6, n_models))
+    #fig, ax = pyplot.subplots(figsize=figsize)
     xlims = []
 
     for index, res in enumerate(results):
@@ -2718,25 +2695,25 @@ def plot_consistency_test(eval_results, normalize=False, one_sided_lower=True, p
     except ValueError:
         raise ValueError('All EvaluationResults have infinite observed_statistics')
     ax.set_yticks(numpy.arange(len(results)))
-    ax.set_yticklabels([res.sim_name for res in results], fontsize=14)
+    ax.set_yticklabels([res.sim_name for res in results], fontsize=22)
     ax.set_ylim([-0.5, len(results)-0.5])
     if hbars:
         yTickPos = ax.get_yticks()
         if len(yTickPos) >= 2:
             ax.barh(yTickPos, numpy.array([99999] * len(yTickPos)), left=-10000,
                     height=(yTickPos[1] - yTickPos[0]), color=['w', 'gray'], alpha=0.2, zorder=0)
-    ax.set_xlabel(xlabel, fontsize=14)
-    ax.tick_params(axis='x', labelsize=13)
+    ax.set_xlabel(xlabel, fontsize=22)
+    ax.tick_params(axis='x', labelsize=22)
     if tight_layout:
         ax.figure.tight_layout()
         fig.tight_layout()
     return ax
 
 
-# In[166]:
+# In[160]:
 
 
-def plot_pvalues_and_intervals(test_results, ax, var=None):
+def plot_pvalues_and_intervals(test_results, ax, var=None, show_bar=False):
     """ Plots p-values and intervals for a list of Poisson or NBD test results
     Args:
         test_results (list): list of EvaluationResults for N-test. All tests should use the same distribution
@@ -2754,14 +2731,19 @@ def plot_pvalues_and_intervals(test_results, ax, var=None):
     p_values = []
 
     # Differentiate between N-tests and other consistency tests
+    
     if test_results[0].name == 'NBD N-Test' or test_results[0].name == 'Poisson N-Test':
-        legend_elements = [matplotlib.lines.Line2D([0], [0], marker='o', color='red', lw=0, label=r'p < 10e-5', markersize=10, markeredgecolor='k'),
-                           matplotlib.lines.Line2D([0], [0], marker='o', color='#FF7F50', lw=0, label=r'10e-5 $\leq$ p < 10e-4', markersize=10, markeredgecolor='k'),
-                           matplotlib.lines.Line2D([0], [0], marker='o', color='gold', lw=0, label=r'10e-4 $\leq$ p < 10e-3', markersize=10, markeredgecolor='k'),
-                           matplotlib.lines.Line2D([0], [0], marker='o', color='white', lw=0, label=r'10e-3 $\leq$ p < 0.0125', markersize=10, markeredgecolor='k'),
-                           matplotlib.lines.Line2D([0], [0], marker='o', color='skyblue', lw=0, label=r'0.0125 $\leq$ p < 0.025', markersize=10, markeredgecolor='k'),
-                           matplotlib.lines.Line2D([0], [0], marker='o', color='blue', lw=0, label=r'p $\geq$ 0.025', markersize=10, markeredgecolor='k')]
-        ax.legend(handles=legend_elements, loc=4, fontsize=13, edgecolor='k')
+        legend_elements = [matplotlib.lines.Line2D([0], [0], marker='o', color='red', lw=0, label=r'p < 10e-5', markersize=15, markeredgecolor='k'),
+                           matplotlib.lines.Line2D([0], [0], marker='o', color='#FF7F50', lw=0, label=r'10e-5 $\leq$ p < 10e-4', markersize=15, markeredgecolor='k'),
+                           matplotlib.lines.Line2D([0], [0], marker='o', color='gold', lw=0, label=r'10e-4 $\leq$ p < 10e-3', markersize=15, markeredgecolor='k'),
+                           matplotlib.lines.Line2D([0], [0], marker='o', color='white', lw=0, label=r'10e-3 $\leq$ p < 0.0125', markersize=15, markeredgecolor='k'),
+                           matplotlib.lines.Line2D([0], [0], marker='o', color='skyblue', lw=0, label=r'0.0125 $\leq$ p < 0.025', markersize=15, markeredgecolor='k'),
+                           matplotlib.lines.Line2D([0], [0], marker='o', color='blue', lw=0, label=r'p $\geq$ 0.025', markersize=15, markeredgecolor='k')]
+        
+        if show_bar==True: 
+            ax.legend(handles=legend_elements, loc=4, fontsize=18, edgecolor='k') 
+    
+  
         # Act on Negative binomial tests
         if test_results[0].name == 'NBD N-Test':
             if var is None:
@@ -2780,17 +2762,18 @@ def plot_pvalues_and_intervals(test_results, ax, var=None):
                 p_values.append(test_results[i].quantile[1] * 2.0) # Calculated p-values according to Meletti et al., (2021)
 
                 if p_values[i] < 10e-5:
-                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='red', markersize=8, zorder=2)
+                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='red', markersize=15, markeredgecolor='k', zorder=2)
                 if p_values[i] >= 10e-5 and p_values[i] < 10e-4:
-                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='#FF7F50', markersize=8, zorder=2)
+                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='#FF7F50', markersize=15, markeredgecolor='k', zorder=2)
                 if p_values[i] >= 10e-4 and p_values[i] < 10e-3:
-                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='gold', markersize=8, zorder=2)
+                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='gold', markersize=15, markeredgecolor='k', zorder=2)
                 if p_values[i] >= 10e-3 and p_values[i] < 0.0125:
-                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='white', markersize=8, zorder=2)
+                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='white', markersize=15, markeredgecolor='k', zorder=2)
                 if p_values[i] >= 0.0125 and p_values[i] < 0.025:
-                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='skyblue', markersize=8, zorder=2)
+                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='skyblue', markersize=15, markeredgecolor='k', zorder=2)
                 if p_values[i] >= 0.025:
-                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='blue', markersize=8, zorder=2)
+                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='blue', markersize=15, markeredgecolor='k', zorder=2)
+        
         # Act on Poisson N-test
         if test_results[0].name == 'Poisson N-Test':
             for i in range(len(test_results)):
@@ -2802,17 +2785,18 @@ def plot_pvalues_and_intervals(test_results, ax, var=None):
                             color='slategray', alpha=1.0, zorder=0)
                 p_values.append(test_results[i].quantile[1] * 2.0)
                 if p_values[i] < 10e-5:
-                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='red', markersize=8, zorder=2)
+                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='red', markersize=15, markeredgecolor='k', zorder=2)
                 elif p_values[i] >= 10e-5 and p_values[i] < 10e-4:
-                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='#FF7F50', markersize=8, zorder=2)
+                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='#FF7F50', markersize=15, markeredgecolor='k', zorder=2)
                 elif p_values[i] >= 10e-4 and p_values[i] < 10e-3:
-                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='gold', markersize=8, zorder=2)
+                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='gold', markersize=15, markeredgecolor='k', zorder=2)
                 elif p_values[i] >= 10e-3 and p_values[i] < 0.0125:
-                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='white', markersize=8, zorder=2)
+                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='white', markersize=15, markeredgecolor='k', zorder=2)
                 elif p_values[i] >= 0.0125 and p_values[i] < 0.025:
-                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='skyblue', markersize=8, zorder=2)
+                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='skyblue', markersize=15, markeredgecolor='k', zorder=2)
                 elif p_values[i] >= 0.025:
-                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='blue', markersize=8, zorder=2)
+                    ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='blue', markersize=15, markeredgecolor='k', zorder=2)
+    
     # Operate on all other consistency tests
     else:
         for i in range(len(test_results)):
@@ -2825,43 +2809,47 @@ def plot_pvalues_and_intervals(test_results, ax, var=None):
             p_values.append(test_results[i].quantile)
 
             if p_values[i] < 10e-5:
-                ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='red', markersize=8, zorder=2)
+                ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='red', markersize=15, markeredgecolor='k', zorder=2)
             elif p_values[i] >= 10e-5 and p_values[i] < 10e-4:
-                ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='#FF7F50', markersize=8, zorder=2)
+                ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='#FF7F50', markersize=15, markeredgecolor='k', zorder=2)
             elif p_values[i] >= 10e-4 and p_values[i] < 10e-3:
-                ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='gold', markersize=8, zorder=2)
+                ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='gold', markersize=15, markeredgecolor='k', zorder=2)
             elif p_values[i] >= 10e-3  and p_values[i] < 0.025:
-                ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='white', markersize=8, zorder=2)
+                ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='white', markersize=15, markeredgecolor='k', zorder=2)
             elif p_values[i] >= 0.025 and p_values[i] < 0.05:
-                ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='skyblue', markersize=8, zorder=2)
+                ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='skyblue', markersize=15, markeredgecolor='k', zorder=2)
             elif p_values[i] >= 0.05:
-                ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='blue', markersize=8, zorder=2)
+                ax.plot(test_results[i].observed_statistic, (len(test_results)-1) - i, marker='o', color='blue', markersize=15, markeredgecolor='k', zorder=2)
+     
+        if show_bar==True:   
+        
+            legend_elements = [
+            matplotlib.lines.Line2D([0], [0], marker='o', color='red', lw=0, label=r'p < 10e-5', markersize=15, markeredgecolor='k'),
+            matplotlib.lines.Line2D([0], [0], marker='o', color='#FF7F50', lw=0, label=r'10e-5 $\leq$ p < 10e-4', markersize=15, markeredgecolor='k'),
+            matplotlib.lines.Line2D([0], [0], marker='o', color='gold', lw=0, label=r'10e-4 $\leq$ p < 10e-3', markersize=15, markeredgecolor='k'),
+            matplotlib.lines.Line2D([0], [0], marker='o', color='white', lw=0, label=r'10e-3 $\leq$ p < 0.025', markersize=15, markeredgecolor='k'),
+            matplotlib.lines.Line2D([0], [0], marker='o', color='skyblue', lw=0, label=r'0.025 $\leq$ p < 0.05', markersize=15, markeredgecolor='k'),
+            matplotlib.lines.Line2D([0], [0], marker='o', color='blue', lw=0, label=r'p $\geq$ 0.05', markersize=15, markeredgecolor='k')]
 
-        legend_elements = [
-            matplotlib.lines.Line2D([0], [0], marker='o', color='red', lw=0, label=r'p < 10e-5', markersize=10, markeredgecolor='k'),
-            matplotlib.lines.Line2D([0], [0], marker='o', color='#FF7F50', lw=0, label=r'10e-5 $\leq$ p < 10e-4', markersize=10, markeredgecolor='k'),
-            matplotlib.lines.Line2D([0], [0], marker='o', color='gold', lw=0, label=r'10e-4 $\leq$ p < 10e-3', markersize=10, markeredgecolor='k'),
-            matplotlib.lines.Line2D([0], [0], marker='o', color='white', lw=0, label=r'10e-3 $\leq$ p < 0.025', markersize=10, markeredgecolor='k'),
-            matplotlib.lines.Line2D([0], [0], marker='o', color='skyblue', lw=0, label=r'0.025 $\leq$ p < 0.05', markersize=10, markeredgecolor='k'),
-            matplotlib.lines.Line2D([0], [0], marker='o', color='blue', lw=0, label=r'p $\geq$ 0.05', markersize=10, markeredgecolor='k')]
-
-        ax.legend(handles=legend_elements, loc=4, fontsize=13, edgecolor='k') 
+            ax.legend(handles=legend_elements, loc=4, fontsize=18, edgecolor='k') 
 
     return ax        
 
 
-# In[167]:
+# In[161]:
 
 
 plt.figure()
     
 poisson_Ntests_C = [ntest_GEAR1, ntest_HKJ, ntest_EBEL, ntest_NEOKINEMA, ntest_PI]
 
-ax = plot_consistency_test(poisson_Ntests_C, one_sided_lower=False, plot_args={'xlabel': 'Number of earthquakes'})
+ax = plot_consistency_test(poisson_Ntests_C, n_models=4, one_sided_lower=False, plot_args={'xlabel': 'Number of earthquakes'})
+                                                                            
 
 ax = plot_pvalues_and_intervals(poisson_Ntests_C, ax)          
 
-ax.text(0, 4.7, 'a)', fontsize =20, color='black')
+ax.text(0, 4.8, 'a)', fontsize =22, color='black')
+
 ax.set_xlim(0,120)
 ax.set_title('')
 plt.savefig('./output/TSR_poisson_Ntests_California.png', dpi=150, bbox_inches = 'tight')
@@ -2869,14 +2857,14 @@ plt.savefig('./output/TSR_poisson_Ntests_California.png', dpi=150, bbox_inches =
 
 # #### Negative Binomial Number Test
 
-# In[168]:
+# In[162]:
 
 
 rates = pd.read_csv('./data/BND_database1934_8yr.txt', sep='\t', skiprows=0) 
 var_ANSS = rates.EQs.var()
 
 
-# In[169]:
+# In[163]:
 
 
 def _nbd_number_test_ndarray(fore_cnt, obs_cnt, variance, epsilon=1e-6):
@@ -2904,7 +2892,7 @@ def _nbd_number_test_ndarray(fore_cnt, obs_cnt, variance, epsilon=1e-6):
     return delta1, delta2
 
 
-# In[170]:
+# In[164]:
 
 
 def negative_binomial_number_test(gridded_forecast, observed_catalog, variance):
@@ -2955,7 +2943,7 @@ def negative_binomial_number_test(gridded_forecast, observed_catalog, variance):
     return result
 
 
-# In[171]:
+# In[165]:
 
 
 ntest_GEAR1_nbd = negative_binomial_number_test(GEAR1C_f, catalog_California1, var_ANSS)
@@ -2965,18 +2953,18 @@ ntest_NEOKINEMA_nbd = negative_binomial_number_test(NEOKINEMA_f, catalog_Califor
 ntest_PI_nbd = negative_binomial_number_test(PI_f, catalog_California1, var_ANSS)
 
 
-# In[172]:
+# In[166]:
 
 
 plt.figure()
 
 nbd_Ntests_C = [ntest_GEAR1_nbd, ntest_HKJ_nbd, ntest_EBEL_nbd, ntest_NEOKINEMA_nbd, ntest_PI_nbd]
 
-ax = plot_consistency_test(nbd_Ntests_C, one_sided_lower=False, variance=var_ANSS, plot_args={'xlabel': 'Number of earthquakes'})
+ax = plot_consistency_test(nbd_Ntests_C, n_models=4, one_sided_lower=False, variance=var_ANSS, plot_args={'xlabel': 'Number of earthquakes'})
 
 ax = plot_pvalues_and_intervals(nbd_Ntests_C, ax, var=var_ANSS) 
 
-ax.text(0, 4.7, 'b)', fontsize =20, color='black')
+ax.text(0, 4.8, 'b)', fontsize =22, color='black')
 ax.set_xlim(0,120)
 ax.set_title('')
 ax.yaxis.tick_right()
@@ -2985,36 +2973,54 @@ plt.savefig('./output/TSR_NBD_Ntests_California.png', dpi=150, bbox_inches = 'ti
 
 # #### Poisson Spatial Test
 
-# In[173]:
+# In[167]:
 
 
 plt.figure()
     
 poisson_Stests_C = [stest_GEAR1C, stest_HKJ, stest_EBEL, stest_NEOKINEMA, stest_PI]
 
-ax = plot_consistency_test(poisson_Stests_C, one_sided_lower=True, plot_args={'xlabel': 'Log-likelihood (space)'})
+ax = plot_consistency_test(poisson_Stests_C, n_models=4, one_sided_lower=True, plot_args={'xlabel': 'Log-likelihood (space)'})
 
 ax = plot_pvalues_and_intervals(poisson_Stests_C, ax)     
 
-ax.text(-300, 4.7, 'a)', fontsize =20, color='black')
+ax.text(-300, 4.8, 'a)', fontsize =22, color='black')
 ax.set_xlim(-300,-100)
 ax.set_title('')
 
 plt.savefig('./output/TSR_poisson_Stests_California.png', dpi=150, bbox_inches = 'tight')
 
 
-# In[174]:
+# In[168]:
+
+
+plt.figure()
+    
+poisson_Stests_C = [stest_GEAR1C, stest_HKJ, stest_EBEL, stest_NEOKINEMA, stest_PI]
+
+ax = plot_consistency_test(poisson_Stests_C, n_models=4, one_sided_lower=True, plot_args={'xlabel': 'Log-likelihood (space)'})
+
+ax = plot_pvalues_and_intervals(poisson_Stests_C, ax)     
+
+ax.text(-300, 4.8, 'a)', fontsize =22, color='black')
+ax.set_xlim(-300,-100)
+ax.set_title('')
+
+plt.savefig('./output/TSR_poisson_Stests_California.png', dpi=150, bbox_inches = 'tight')
+
+
+# In[169]:
 
 
 plt.figure()
     
 binary_Stests_C = [sbtest_GEAR1C, sbtest_HKJ, sbtest_EBEL, sbtest_NEOKINEMA, sbtest_PI]
 
-ax = plot_consistency_test(binary_Stests_C, one_sided_lower=True, plot_args={'xlabel': 'Log-likelihood (space)'})
+ax = plot_consistency_test(binary_Stests_C, n_models=4, one_sided_lower=True, plot_args={'xlabel': 'Log-likelihood (space)'})
 
 ax = plot_pvalues_and_intervals(binary_Stests_C, ax)     
 
-ax.text(-300.0, 4.7, 'b)', fontsize =20, color='black')
+ax.text(-300.0, 4.8, 'b)', fontsize =22, color='black')
 ax.set_xlim(-300,-100)
 ax.set_title('')
 
@@ -3023,7 +3029,7 @@ plt.savefig('./output/TSR_binary_Stests_California.png', dpi=150, bbox_inches = 
 
 # #### Poisson Conditional Likelihood Test
 
-# In[175]:
+# In[170]:
 
 
 cltest_GEAR1 = poisson.conditional_likelihood_test(GEAR1C_f, catalog_California1, seed=seed)
@@ -3033,18 +3039,18 @@ cltest_NEOKINEMA = poisson.conditional_likelihood_test(NEOKINEMA_f, catalog_Cali
 cltest_PI = poisson.conditional_likelihood_test(PI_f, catalog_California1, seed=seed)
 
 
-# In[176]:
+# In[171]:
 
 
 plt.figure()
 
 poisson_CLtests_C = [cltest_GEAR1, cltest_HKJ, cltest_EBEL, cltest_NEOKINEMA, cltest_PI]
 
-ax = plot_consistency_test(poisson_CLtests_C, one_sided_lower=True, plot_args={'xlabel': 'Log-likelihood'})
+ax = plot_consistency_test(poisson_CLtests_C, n_models=4, one_sided_lower=True, plot_args={'xlabel': 'Log-likelihood'})
 
 ax = plot_pvalues_and_intervals(poisson_CLtests_C, ax) 
 
-ax.text(-420, 4.7, 'a)', fontsize =20, color='black')
+ax.text(-420, 4.8, 'a)', fontsize =22, color='black')
 ax.set_xlim(-420, -180)
 ax.set_title('')
 plt.savefig('./output/TSR_poisson_cLtests_California.png', dpi=150, bbox_inches = 'tight')
@@ -3052,7 +3058,7 @@ plt.savefig('./output/TSR_poisson_cLtests_California.png', dpi=150, bbox_inches 
 
 # #### Binary Conditional Likelihood Test
 
-# In[177]:
+# In[172]:
 
 
 def binomial_conditional_likelihood_test(gridded_forecast, observed_catalog, num_simulations=1000, seed=None, random_numbers=None, verbose=False):
@@ -3104,7 +3110,7 @@ def binomial_conditional_likelihood_test(gridded_forecast, observed_catalog, num
     return result
 
 
-# In[178]:
+# In[173]:
 
 
 clbtest_GEAR1 = binomial_conditional_likelihood_test(GEAR1C_f, catalog_California1, seed=seed)
@@ -3114,21 +3120,21 @@ clbtest_NEOKINEMA = binomial_conditional_likelihood_test(NEOKINEMA_f, catalog_Ca
 clbtest_PI = binomial_conditional_likelihood_test(PI_f, catalog_California1, seed=seed)
 
 
-# In[179]:
+# In[174]:
 
 
 plt.figure()
 
 binary_CLtests_C = [clbtest_GEAR1, clbtest_HKJ, clbtest_EBEL, clbtest_NEOKINEMA, clbtest_PI]
 
-ax = plot_consistency_test(binary_CLtests_C, one_sided_lower=True, plot_args={'xlabel': 'Log-likelihood'})
+ax = plot_consistency_test(binary_CLtests_C, n_models=4, one_sided_lower=True, plot_args={'xlabel': 'Log-likelihood'})
 
 ax = plot_pvalues_and_intervals(binary_CLtests_C, ax) 
 
 ax.yaxis.tick_right()
 ax.set_xlim(-420, -180)
 ax.set_title('')
-ax.text(-420, 4.7, 'b)', fontsize =20, color='black')
+ax.text(-420, 4.8, 'b)', fontsize =22, color='black')
 plt.savefig('./output/TSR_binary_cLtests_California.png', dpi=150, bbox_inches = 'tight')
 
 
@@ -3136,7 +3142,7 @@ plt.savefig('./output/TSR_binary_cLtests_California.png', dpi=150, bbox_inches =
 
 # #### Poisson Number Test
 
-# In[180]:
+# In[175]:
 
 
 ntest_GEAR1_NZ = poisson.number_test(GEAR1NZ_f, catalog_NZ)
@@ -3145,18 +3151,19 @@ ntest_PPE = poisson.number_test(PPE_f, catalog_NZ)
 ntest_SUP = poisson.number_test(SUP_f, catalog_NZ)
 
 
-# In[181]:
+# In[176]:
 
 
 plt.figure()
     
 poisson_Ntests_NZ = [ntest_GEAR1_NZ, ntest_NZHM, ntest_PPE, ntest_SUP]
 
-ax = plot_consistency_test(poisson_Ntests_NZ, one_sided_lower=False, plot_args={'xlabel': 'Number of earthquakes'})
+ax = plot_consistency_test(poisson_Ntests_NZ, n_models=3, one_sided_lower=False, plot_args={'xlabel': 'Number of earthquakes'})
 
 ax = plot_pvalues_and_intervals(poisson_Ntests_NZ, ax)          
 
-ax.text(0, 3.7, 'a)', fontsize =20, color='black')
+ax.text(0, 3.8, 'a)', fontsize =22, color='black')
+
 ax.set_xlim(0,100)
 ax.set_title('')
 plt.savefig('./output/TSR_poisson_Ntests_NZ.png', dpi=150, bbox_inches = 'tight')
@@ -3164,14 +3171,14 @@ plt.savefig('./output/TSR_poisson_Ntests_NZ.png', dpi=150, bbox_inches = 'tight'
 
 # #### NBD Number Test
 
-# In[182]:
+# In[177]:
 
 
 rates = pd.read_csv('./data/BND_database1942_8yr.txt', sep='\t', skiprows=0) 
 var_GeoNet = rates.EQs.var()
 
 
-# In[183]:
+# In[178]:
 
 
 ntest_GEAR1NZ_nbd = negative_binomial_number_test(GEAR1NZ_f, catalog_NZ, var_GeoNet)
@@ -3180,18 +3187,18 @@ ntest_PPE_nbd = negative_binomial_number_test(PPE_f, catalog_NZ, var_GeoNet)
 ntest_SUP_nbd = negative_binomial_number_test(SUP_f, catalog_NZ, var_GeoNet)
 
 
-# In[184]:
+# In[179]:
 
 
 plt.figure()
 
 nbd_Ntests_NZ = [ntest_GEAR1NZ_nbd, ntest_NZHM_nbd, ntest_PPE_nbd, ntest_SUP_nbd]
 
-ax = plot_consistency_test(nbd_Ntests_NZ, one_sided_lower=False, variance=var_GeoNet, plot_args={'xlabel': 'Number of earthquakes'})
+ax = plot_consistency_test(nbd_Ntests_NZ, n_models=3, one_sided_lower=False, variance=var_GeoNet, plot_args={'xlabel': 'Number of earthquakes'})
 
 ax = plot_pvalues_and_intervals(nbd_Ntests_NZ, ax, var=var_GeoNet) 
 
-ax.text(0, 3.7, 'b)', fontsize =20, color='black')
+ax.text(0, 3.8, 'b)', fontsize =22, color='black')
 ax.set_xlim(0,100)
 ax.set_title('')
 ax.yaxis.tick_right()
@@ -3200,7 +3207,7 @@ plt.savefig('./output/TSR_NBD_Ntests_NZ.png', dpi=150, bbox_inches = 'tight')
 
 # #### Poisson Spatial Test
 
-# In[185]:
+# In[180]:
 
 
 stest_GEAR1NZ = poisson.spatial_test(GEAR1NZ_f, catalog_NZ, seed=seed)
@@ -3209,18 +3216,18 @@ stest_PPE = poisson.spatial_test(PPE_f, catalog_NZ, seed=seed)
 stest_SUP = poisson.spatial_test(SUP_f, catalog_NZ,seed=seed)
 
 
-# In[186]:
+# In[181]:
 
 
 plt.figure()
     
 poisson_Stests_NZ = [stest_GEAR1NZ, stest_NZHM, stest_PPE, stest_SUP]
 
-ax = plot_consistency_test(poisson_Stests_NZ, plot_args={'xlabel': 'Log-likelihood (space)'})
+ax = plot_consistency_test(poisson_Stests_NZ, n_models=3, plot_args={'xlabel': 'Log-likelihood (space)'})
 
 ax = plot_pvalues_and_intervals(poisson_Stests_NZ, ax)     
 
-ax.text(-285, 3.7, 'a)', fontsize =20, color='black')
+ax.text(-285, 3.8, 'a)', fontsize =22, color='black')
 ax.set_xlim(-285,-175)
 ax.set_title('')
 
@@ -3229,27 +3236,27 @@ plt.savefig('./output/TSR_poisson_Stests_NZ.png', dpi=150, bbox_inches = 'tight'
 
 # #### Binary Spatial Test
 
-# In[187]:
+# In[182]:
 
 
 plt.figure()
 
 binary_Stests_NZ = [sbtest_GEAR1NZ, sbtest_NZHM, sbtest_PPE, sbtest_SUP]
 
-ax = plot_consistency_test(binary_Stests_NZ, one_sided_lower=True, plot_args={'xlabel': 'Log-likelihood (space)'})
+ax = plot_consistency_test(binary_Stests_NZ, n_models=3, one_sided_lower=True, plot_args={'xlabel': 'Log-likelihood (space)'})
 
 ax = plot_pvalues_and_intervals(binary_Stests_NZ, ax) 
 
 ax.yaxis.tick_right()  
-ax.text(-285, 3.7, 'b)', fontsize =20, color='black')
+ax.text(-285, 3.8, 'b)', fontsize =22, color='black')
 ax.set_xlim(-285,-175)
 ax.set_title('')
-#plt.savefig('./output/TSR_binary_Stests_NZ.png', dpi=150, bbox_inches = 'tight')
+plt.savefig('./output/TSR_binary_Stests_NZ.png', dpi=150, bbox_inches = 'tight')
 
 
 # #### Poisson Conditional Likelihood Test
 
-# In[188]:
+# In[183]:
 
 
 cltest_GEAR1NZ = poisson.conditional_likelihood_test(GEAR1NZ_f, catalog_NZ, seed=seed)
@@ -3258,18 +3265,18 @@ cltest_PPE = poisson.conditional_likelihood_test(PPE_f, catalog_NZ, seed=seed)
 cltest_SUP = poisson.conditional_likelihood_test(SUP_f, catalog_NZ, seed=seed)
 
 
-# In[189]:
+# In[184]:
 
 
 plt.figure()
 
 poisson_CLtests_NZ = [cltest_GEAR1NZ, cltest_NZHM, cltest_PPE, cltest_SUP]
 
-ax = plot_consistency_test(poisson_CLtests_NZ, plot_args={'xlabel': 'Log-likelihood'})
+ax = plot_consistency_test(poisson_CLtests_NZ, n_models=3, plot_args={'xlabel': 'Log-likelihood'})
 
 ax = plot_pvalues_and_intervals(poisson_CLtests_NZ, ax) 
 
-ax.text(-420, 3.7, 'a)', fontsize =20, color='black')
+ax.text(-420, 3.8, 'a)', fontsize =22, color='black')
 ax.set_xlim(-420, -280)
 ax.set_title('')
 plt.savefig('./output/TSR_poisson_cLtests_NZ.png', dpi=150, bbox_inches = 'tight')
@@ -3277,7 +3284,7 @@ plt.savefig('./output/TSR_poisson_cLtests_NZ.png', dpi=150, bbox_inches = 'tight
 
 # #### Binary Conditional Likelihood Test
 
-# In[190]:
+# In[185]:
 
 
 clbtest_GEAR1NZ = binomial_conditional_likelihood_test(GEAR1NZ_f, catalog_NZ, seed=seed)
@@ -3286,20 +3293,20 @@ clbtest_PPE = binomial_conditional_likelihood_test(PPE_f, catalog_NZ, seed=seed)
 clbtest_SUP = binomial_conditional_likelihood_test(SUP_f, catalog_NZ, seed=seed)
 
 
-# In[191]:
+# In[186]:
 
 
 plt.figure()
 
 binary_CLtests_NZ = [clbtest_GEAR1NZ, clbtest_NZHM, clbtest_PPE, clbtest_SUP]
 
-ax = plot_consistency_test(binary_CLtests_NZ, plot_args={'xlabel': 'Log-likelihood'})
+ax = plot_consistency_test(binary_CLtests_NZ, n_models=3, plot_args={'xlabel': 'Log-likelihood'})
 
 ax = plot_pvalues_and_intervals(binary_CLtests_NZ, ax) 
 
 ax.yaxis.tick_right()
 ax.set_xlim(-420, -280)
-ax.text(-415, 3.7, 'b)', fontsize =20, color='black')
+ax.text(-420, 3.8, 'b)', fontsize =22, color='black')
 ax.set_title('')
 plt.savefig('./output/TSR_binary_cLtests_NZ.png', dpi=150, bbox_inches = 'tight')
 
@@ -3308,7 +3315,7 @@ plt.savefig('./output/TSR_binary_cLtests_NZ.png', dpi=150, bbox_inches = 'tight'
 
 # #### Poisson Number Test
 
-# In[192]:
+# In[187]:
 
 
 ntest_GEAR1I = poisson.number_test(GEAR1I_f, catalog_Italy)
@@ -3326,7 +3333,7 @@ ntest_TRIPLES_CSI = poisson.number_test(TRIPLES_CSI_f, catalog_Italy)
 ntest_TRIPLES_HYBRID = poisson.number_test(TRIPLES_HYBRID_f, catalog_Italy)
 
 
-# In[193]:
+# In[188]:
 
 
 plt.figure()
@@ -3335,25 +3342,26 @@ poisson_Ntests_I = [ntest_GEAR1I, ntest_ALM, ntest_HALM, ntest_ALM_IT, ntest_MPS
                  ntest_HZATI, ntest_RI, ntest_HRSS_CSI, ntest_HRSS_HYBRID, ntest_TRIPLES_CPTI, 
                  ntest_TRIPLES_CSI, ntest_TRIPLES_HYBRID]
 
-ax = plot_consistency_test(poisson_Ntests_I, one_sided_lower=False, plot_args={'xlabel': 'Number of earthquakes'})
+ax = plot_consistency_test(poisson_Ntests_I, n_models=12, one_sided_lower=False, plot_args={'xlabel': 'Number of earthquakes'})
 
 ax = plot_pvalues_and_intervals(poisson_Ntests_I, ax)          
 
-ax.text(0, 13, 'a)', fontsize =20, color='black')
+ax.text(0, 12.8, 'a)', fontsize =22, color='black')
+
 ax.set_xlim(0,40)
 plt.savefig('./output/TSR_poisson_Ntests_Italy.png', dpi=150, bbox_inches = 'tight')
 
 
 # #### NBD Number Test
 
-# In[194]:
+# In[189]:
 
 
 rates = pd.read_csv('./data/BND_database1990_8yr.txt', sep='\t', skiprows=0) 
 var_BSI = rates.EQs.var()
 
 
-# In[195]:
+# In[190]:
 
 
 ntest_GEAR1I_nbd = negative_binomial_number_test(GEAR1I_f, catalog_Italy, var_BSI)
@@ -3371,7 +3379,7 @@ ntest_TRIPLES_CSI_nbd = negative_binomial_number_test(TRIPLES_CSI_f, catalog_Ita
 ntest_TRIPLES_HYBRID_nbd = negative_binomial_number_test(TRIPLES_HYBRID_f, catalog_Italy, var_BSI)
 
 
-# In[196]:
+# In[191]:
 
 
 plt.figure()
@@ -3380,19 +3388,19 @@ nbd_Ntests_I = [ntest_GEAR1I_nbd, ntest_ALM_nbd, ntest_HALM_nbd, ntest_ALM_IT_nb
               ntest_HAZGRIDX_nbd, ntest_HZATI_nbd, ntest_RI_nbd, ntest_HRSS_CSI_nbd, ntest_HRSS_HYBRID_nbd,
               ntest_TRIPLES_CPTI_nbd, ntest_TRIPLES_CSI_nbd, ntest_TRIPLES_HYBRID_nbd]
 
-ax = plot_consistency_test(nbd_Ntests_I, one_sided_lower=False, variance=var_BSI, plot_args={'xlabel': 'Number of earthquakes'})
+ax = plot_consistency_test(nbd_Ntests_I, n_models=12, one_sided_lower=False, variance=var_BSI, plot_args={'xlabel': 'Number of earthquakes'})
 
 ax = plot_pvalues_and_intervals(nbd_Ntests_I, ax, var=var_BSI) 
 
 ax.yaxis.tick_right()
-ax.text(0, 13, 'b)', fontsize =20, color='black')
+ax.text(0, 12.8, 'b)', fontsize =22, color='black')
 ax.set_xlim(0,40)
 plt.savefig('./output/TSR_NBD_Ntests_Italy.png', dpi=150, bbox_inches = 'tight')
 
 
 # #### Poisson Spatial Test
 
-# In[197]:
+# In[192]:
 
 
 plt.figure()
@@ -3401,18 +3409,18 @@ poisson_Stests_I = [stest_GEAR1I, stest_ALM, stest_HALM, stest_ALM_IT, stest_MPS
                   stest_HZATI, stest_RI, stest_HRSS_CSI, stest_HRSS_HYBRID, stest_TRIPLES_CPTI, 
                   stest_TRIPLES_CSI, stest_TRIPLES_HYBRID]
 
-ax = plot_consistency_test(poisson_Stests_I, one_sided_lower=True, plot_args={'xlabel': 'Log-likelihood (space)'})
+ax = plot_consistency_test(poisson_Stests_I, n_models=12, one_sided_lower=True, plot_args={'xlabel': 'Log-likelihood (space)'})
 
 ax = plot_pvalues_and_intervals(poisson_Stests_I, ax)     
 
-ax.text(-100, 13, 'a)', fontsize =20, color='black')
+ax.text(-100, 12.8, 'a)', fontsize =22, color='black')
 ax.set_xlim(-100,0)
 ax.set_title('')
 
 plt.savefig('./output/TSR_poisson_Stest_Italy.png', dpi=150, bbox_inches = 'tight')
 
 
-# In[198]:
+# In[193]:
 
 
 plt.figure()
@@ -3421,20 +3429,20 @@ binary_Stests_I = [sbtest_GEAR1I, sbtest_ALM, sbtest_HALM, sbtest_ALM_IT, sbtest
                 sbtest_HAZGRIDX, sbtest_HZATI, sbtest_RI, sbtest_HRSS_CSI, sbtest_HRSS_HYBRID,
                 sbtest_TRIPLES_CPTI, sbtest_TRIPLES_CSI, sbtest_TRIPLES_HYBRID]
 
-ax = plot_consistency_test(binary_Stests_I, one_sided_lower=True, plot_args={'xlabel': 'Log-likelihood (space)'})
+ax = plot_consistency_test(binary_Stests_I, n_models=12, one_sided_lower=True, plot_args={'xlabel': 'Log-likelihood (space)'})
 
 ax = plot_pvalues_and_intervals(binary_Stests_I, ax) 
 
 ax.yaxis.tick_right()  
 ax.set_xlim(-100,0)
 ax.set_title('')
-ax.text(-100.0, 13, 'b)', fontsize =20, color='black')
-#plt.savefig('./output/TSR_binary_Stests_Italy.png', dpi=150, bbox_inches = 'tight')
+ax.text(-100.0, 12.8, 'b)', fontsize =22, color='black')
+plt.savefig('./output/TSR_binary_Stests_Italy.png', dpi=150, bbox_inches = 'tight')
 
 
 # #### Poisson Conditional Likelihood Test
 
-# In[199]:
+# In[194]:
 
 
 cltest_GEAR1I = poisson.conditional_likelihood_test(GEAR1I_f, catalog_Italy, seed=seed)
@@ -3452,7 +3460,7 @@ cltest_TRIPLES_CSI = poisson.conditional_likelihood_test(TRIPLES_CSI_f, catalog_
 cltest_TRIPLES_HYBRID = poisson.conditional_likelihood_test(TRIPLES_HYBRID_f, catalog_Italy, seed=seed)
 
 
-# In[200]:
+# In[195]:
 
 
 plt.figure()
@@ -3461,11 +3469,11 @@ poisson_CLtests_I = [cltest_GEAR1I, cltest_ALM, cltest_HALM, cltest_ALM_IT, clte
                   cltest_HZATI, cltest_RI, cltest_HRSS_CSI, cltest_HRSS_HYBRID, cltest_TRIPLES_CPTI, 
                   cltest_TRIPLES_CSI, cltest_TRIPLES_HYBRID]
 
-ax = plot_consistency_test(poisson_CLtests_I, plot_args={'xlabel': 'Log-likelihood'})
+ax = plot_consistency_test(poisson_CLtests_I, n_models=12, plot_args={'xlabel': 'Log-likelihood'})
 
 ax = plot_pvalues_and_intervals(poisson_CLtests_I, ax) 
 
-ax.text(-130, 13, 'a)', fontsize =20, color='black')
+ax.text(-130, 12.8, 'a)', fontsize =22, color='black')
 ax.set_xlim(-130, -40)
 ax.set_title('')
 plt.savefig('./output/TSR_poisson_cLtests_Italy.png', dpi=150, bbox_inches = 'tight')
@@ -3473,7 +3481,7 @@ plt.savefig('./output/TSR_poisson_cLtests_Italy.png', dpi=150, bbox_inches = 'ti
 
 # #### Binary Conditional Likelihood Test
 
-# In[201]:
+# In[196]:
 
 
 clbtest_GEAR1 = binomial_conditional_likelihood_test(GEAR1I_f, catalog_Italy, seed=seed)
@@ -3491,7 +3499,7 @@ clbtest_TRIPLES_CSI = binomial_conditional_likelihood_test(TRIPLES_CSI_f, catalo
 clbtest_TRIPLES_HYBRID = binomial_conditional_likelihood_test(TRIPLES_HYBRID_f, catalog_Italy, seed=seed)
 
 
-# In[202]:
+# In[197]:
 
 
 plt.figure()
@@ -3500,19 +3508,18 @@ binary_CLtests_I = [clbtest_GEAR1, cltest_ALM, cltest_HALM, cltest_ALM_IT, cltes
                  clbtest_HAZGRIDX, cltest_HZATI, cltest_RI, cltest_HRSS_CSI, cltest_HRSS_HYBRID,
                  clbtest_TRIPLES_CPTI, cltest_TRIPLES_CSI, cltest_TRIPLES_HYBRID]
 
-ax = plot_consistency_test(binary_CLtests_I, plot_args={'xlabel': 'Log-likelihood'})
+ax = plot_consistency_test(binary_CLtests_I, n_models=12, plot_args={'xlabel': 'Log-likelihood'})
 
 ax = plot_pvalues_and_intervals(binary_CLtests_I, ax) 
 
 ax.yaxis.tick_right()  
-ax.text(-130, 13, 'b)', fontsize =20, color='black')
+ax.text(-130, 12.8, 'b)', fontsize =22, color='black')
 ax.set_xlim(-130, -40)
 ax.set_title('')
 plt.savefig('./output/TSR_binary_cLtests_Italy.png', dpi=150, bbox_inches = 'tight')
 
 
-# In[113]:
+# In[ ]:
 
 
 print("All done in %s seconds ;o)" %(time.time() -t0))
-
